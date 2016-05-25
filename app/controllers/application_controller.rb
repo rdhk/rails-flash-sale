@@ -3,3 +3,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 end
+
+# remove turbolink
+# remove unused js css files and backup files

@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
-  get 'sessions/new'
+
+  get 'homepage/index'
+
+  get 'activation/:token' => 'users#activate', as: 'activate'
+
+  get 'signup' => 'users#new'
+  resources :users
+  root 'homepage#index'
 
   get 'sessions/create'
 
