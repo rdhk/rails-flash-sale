@@ -1,0 +1,34 @@
+<div class="form-horizontal">
+<%= form_for(:session) do |f| %>
+
+<fieldset>
+<legend>Please log in</legend>
+
+  <div class="form-group">
+    <%= f.label :email, class: "col-lg-2 control-label" %>
+    <div class="col-lg-4">
+      <%= f.email_field :email, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :password, class: "col-lg-2 control-label" %>
+    <div class="col-lg-4">
+      <%= f.password_field :password, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :remember_me, class: "col-lg-2 control-label" %>
+    <div class="col-lg-1">
+      <%= f.check_box :remember_me, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="actions col-lg-offset-2">
+    <%= f.submit "Log in", class: "btn-submit" %>
+  </div>
+
+  </fieldset>
+<% end %>
+</div>

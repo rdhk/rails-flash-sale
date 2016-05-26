@@ -1,2 +1,6 @@
-<h1>Sessions#new</h1>
-<p>Find me in app/views/sessions/new.html.erb</p>
+<div class="well col-lg-8 col-lg-offset-1">
+  <%= render partial: 'shared/alerts' %>
+  <%= render 'form' %>
+  <%= link_to "Forgot Password?" , new_password_request_path %>
+</div>
+

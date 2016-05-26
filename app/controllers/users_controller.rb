@@ -20,17 +20,14 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-
     if @user.save
-      # get rid of format, since we have only one format
-      # user url helpers
       redirect_to root_path, notice: "User #{@user.first_name} was successfully created and an email has been sent. Please go to your email and verify your account."
     else
       render action: 'new'
     end
   end
 
-private
+  private
 
 
   def user_params

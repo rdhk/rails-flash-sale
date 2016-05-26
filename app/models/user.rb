@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   has_secure_password
 
   validates :first_name, :last_name, :email, presence: true
-  validates :password, length: { minimum: 6 }, allow_blank: true
+  validates :password, length: { minimum: 6 }
   # validates :email, uniqueness: true
   # password should be min 6 chars
 
@@ -13,11 +13,53 @@ class User < ActiveRecord::Base
     verification_token_expires_at >= Time.current
   end
 
+  def is_valid?(password)
+    verified_at && authenticate(password)
+  end
+
   def mark_verified
     self.verified_at = Time.current
     self.verification_token = nil
     self.verification_token_expires_at = nil
     save
+  end
+
+  def generate_token_and_save(column)
+    generate_token(column)
+    save
+  end
+
+  # def generate_remembrance_token
+  #   generate_token(:remember_me_token)
+  #   save
+  # end
+
+  # def generate_forgot_password_token
+  #   generate_token(:remember_me_token)
+  #   save
+  # end
+
+  def handle_forgot_password
+    generate_token(:password_change_token)
+    self.password_token_expires_at = Time.current + 3.hours
+    save
+    UserNotifier.password_reset(self).deliver
+  end
+
+  def change_password(password)
+    self.password = password
+    self.password_change_token = nil
+    self.password_token_expires_at = nil
+    save
+  end
+
+  def clear_remember_token
+    self.remember_me_token = nil
+    save
+  end
+
+  def has_valid_password_token
+    password_token_expires_at >= Time.current
   end
 
   private
@@ -32,9 +74,12 @@ class User < ActiveRecord::Base
   end
 
   def generate_token(column)
-    begin
+    loop do
       self[column] = SecureRandom.urlsafe_base64
-    end while User.exists?(column => self[column])
+      if(!User.exists?(column => self[column]))
+        break
+      end
+    end
   end
 
 end

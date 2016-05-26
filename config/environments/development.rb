@@ -43,7 +43,7 @@ Rails.application.configure do
     domain:"gmail.com",
     authentication: "plain",
     user_name:"radhika@vinsol.com",
-    password:"cruise123",
+    password:"vinsol_test",
     enable_starttls_auto: true
   }
 

@@ -19,9 +19,8 @@ class UserNotifier < ApplicationMailer
   #
 
   #same as above
-  def send_password_change_token
-    @greeting = "Hi"
-
-    mail to: "to@example.org"
+  def password_reset(user)
+    @user = user
+    mail to: user.email , subject: 'FlashSale Account Password Reset'
   end
 end

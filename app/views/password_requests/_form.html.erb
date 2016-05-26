@@ -1,0 +1,19 @@
+<div class="form-horizontal">
+<%= form_for(:password_request, url: password_requests_path) do |f| %>
+
+<fieldset>
+
+  <div class="form-group">
+    <%= f.label :email, class: "col-lg-2 control-label" %><br>
+    <div class="col-lg-4">
+      <%= f.email_field :email, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="actions col-lg-offset-2">
+    <%= f.submit "Submit", class: "btn-submit" %>
+  </div>
+
+  </fieldset>
+<% end %>
+</div>
