@@ -44,3 +44,4 @@ exclude_paths:
 - test/
 - vendor/
 - "app/assets/javascripts/bootstrap.js"
+- "app/assets/stylesheets/bootstrap.css"
