@@ -21,6 +21,6 @@ class UserNotifier < ApplicationMailer
   #same as above
   def password_reset(user)
     @user = user
-    mail to: user.email , subject: 'FlashSale Account Password Reset'
+    mail to: user.email , subject: 'FlashSale Password Reset Instructions'
   end
 end

@@ -13,13 +13,17 @@ class ApplicationController < ActionController::Base
     # debugger
     if session[:user_id]
       User.find(session[:user_id])
-    elsif(!cookies[:remember_me_token].blank?)
+    elsif(cookies[:remember_me_token].present?)
       User.find_by_remember_me_token(cookies[:remember_me_token])
+      #FIXME_AB: sign_in(user)
     end
   end
 
+  #FIXME_AB: we call it authenticate
   def require_user
+    #FIXME_AB: use url_helpers
     redirect_to '/login' unless current_user
+    #FIXME_AB: always set flash message when redirect
   end
 
 end

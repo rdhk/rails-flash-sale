@@ -1,3 +1,4 @@
+<% #FIXME_AB: if signed_in? -%>
 <% if current_user %>
     <li><%= current_user.email %></li>
     <li><%= link_to "Log out", logout_path, method: "delete" %></li>

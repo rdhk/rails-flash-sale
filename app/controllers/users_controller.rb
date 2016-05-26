@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
 
+  #FIXME_AB: before actions missing
 
   def new
     @user = User.new
@@ -9,8 +10,9 @@ class UsersController < ApplicationController
     user = User.find_by_verification_token(params[:token])
 
     if(user && user.valid_authenticity_token?)
+      #FIXME_AB: sign_in(user)
       session[:user_id] = user.id
-      user.mark_verified
+      user.mark_verified #FIXME_AB: user.mark_verified!
       redirect_to root_path, notice: "Your account has been verified and you are now logged in."
     else
       redirect_to root_path, notice: "Sorry, expired link."

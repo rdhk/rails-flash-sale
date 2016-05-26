@@ -1,8 +1,10 @@
 class User < ActiveRecord::Base
   has_secure_password
 
+  attr_accessor :password_required
+
   validates :first_name, :last_name, :email, presence: true
-  validates :password, length: { minimum: 6 }
+  validates :password, length: { minimum: 6 }, if: "password_required.present?"
   # validates :email, uniqueness: true
   # password should be min 6 chars
 
@@ -13,21 +15,28 @@ class User < ActiveRecord::Base
     verification_token_expires_at >= Time.current
   end
 
+  #FIXME_AB:  not needed
   def is_valid?(password)
-    verified_at && authenticate(password)
+    verified? && authenticate(password)
   end
 
+  def verified?
+    verified_at.present?
+  end
+
+  #FIXME_AB: mark_verified!
   def mark_verified
     self.verified_at = Time.current
     self.verification_token = nil
     self.verification_token_expires_at = nil
-    save
+    save!
   end
 
   def generate_token_and_save(column)
     generate_token(column)
     save
   end
+
 
   # def generate_remembrance_token
   #   generate_token(:remember_me_token)
@@ -41,6 +50,7 @@ class User < ActiveRecord::Base
 
   def handle_forgot_password
     generate_token(:password_change_token)
+    #FIXME_AB: Don't hardcode 3
     self.password_token_expires_at = Time.current + 3.hours
     save
     UserNotifier.password_reset(self).deliver
@@ -53,6 +63,7 @@ class User < ActiveRecord::Base
     save
   end
 
+  #FIXME_AB: !
   def clear_remember_token
     self.remember_me_token = nil
     save
