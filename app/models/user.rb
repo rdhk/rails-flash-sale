@@ -3,29 +3,28 @@ class User < ActiveRecord::Base
 
   attr_accessor :password_required
 
+  scope :verified, -> {where.not(verified_at: nil)}
+
   validates :first_name, :last_name, :email, presence: true
   validates :password, length: { minimum: 6 }, if: "password_required.present?"
-  # validates :email, uniqueness: true
-  # password should be min 6 chars
+  validates :email, format: { with: REGEX[:email] }
+  #FIXME_AB: always think for case sensitivity when you use uniqueness
+  validates :email, uniqueness: true
 
-  after_commit :send_verification_email, on: :create
-  before_create :generate_verification_token
+  after_commit :send_verification_email, on: :create, if: "!admin"
+  before_create :generate_verification_token, if: "!admin"
+  before_validation :set_password_required, on: :create
+
 
   def valid_authenticity_token?
     verification_token_expires_at >= Time.current
-  end
-
-  #FIXME_AB:  not needed
-  def is_valid?(password)
-    verified? && authenticate(password)
   end
 
   def verified?
     verified_at.present?
   end
 
-  #FIXME_AB: mark_verified!
-  def mark_verified
+  def mark_verified!
     self.verified_at = Time.current
     self.verification_token = nil
     self.verification_token_expires_at = nil
@@ -37,43 +36,39 @@ class User < ActiveRecord::Base
     save
   end
 
-
-  # def generate_remembrance_token
-  #   generate_token(:remember_me_token)
-  #   save
-  # end
-
-  # def generate_forgot_password_token
-  #   generate_token(:remember_me_token)
-  #   save
-  # end
-
-  def handle_forgot_password
+  def fulfill_forgot_password_request
     generate_token(:password_change_token)
-    #FIXME_AB: Don't hardcode 3
+    #FIXME_AB: Don't hardcode 3. 3.hours.from_now
     self.password_token_expires_at = Time.current + 3.hours
-    save
+    save!
     UserNotifier.password_reset(self).deliver
   end
 
-  def change_password(password)
+  def change_password(password, password_confirmation)
+    self.password_required = true
     self.password = password
+    self.password_confirmation = password_confirmation
     self.password_change_token = nil
     self.password_token_expires_at = nil
     save
   end
 
-  #FIXME_AB: !
-  def clear_remember_token
+  def clear_remember_token!
     self.remember_me_token = nil
-    save
+    save!
   end
 
-  def has_valid_password_token
+  def has_valid_password_token?
     password_token_expires_at >= Time.current
   end
 
   private
+
+  def set_password_required
+    if(password.present?)
+      self.password_required = true
+    end
+  end
 
   def generate_verification_token
     generate_token(:verification_token)
@@ -94,4 +89,3 @@ class User < ActiveRecord::Base
   end
 
 end
-

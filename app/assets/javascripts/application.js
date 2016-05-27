@@ -13,5 +13,3 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap
-
-// FIXME_AB: remove all unwanted js css files

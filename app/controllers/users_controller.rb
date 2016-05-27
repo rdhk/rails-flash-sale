@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  #FIXME_AB: before actions missing
+  before_action :ensure_anonymous
 
   def new
     @user = User.new
@@ -10,9 +10,8 @@ class UsersController < ApplicationController
     user = User.find_by_verification_token(params[:token])
 
     if(user && user.valid_authenticity_token?)
-      #FIXME_AB: sign_in(user)
-      session[:user_id] = user.id
-      user.mark_verified #FIXME_AB: user.mark_verified!
+      sign_in(user)
+      user.mark_verified!
       redirect_to root_path, notice: "Your account has been verified and you are now logged in."
     else
       redirect_to root_path, notice: "Sorry, expired link."
@@ -23,7 +22,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      redirect_to root_path, notice: "User #{@user.first_name} was successfully created and an email has been sent. Please go to your email and verify your account."
+      redirect_to root_path, notice: "Your signup was successful, we have sent you an email verification email, please check your email and verify to continue."
     else
       render action: 'new'
     end

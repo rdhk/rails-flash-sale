@@ -1,7 +1,6 @@
 <h1>Welcome <%= @user.first_name %>,</h1>
-
 <p>
-Please click this link to verify your account.
+  Please click this link to verify your account.
   <%= link_to( activate_url(@user.verification_token), activate_url(@user.verification_token)) %>
-Please note this link is only valid till 6 hours.
+  Please note this link is only valid till <%= @user.verification_token_expires_at.to_formatted_s(:short) %>
 </p>

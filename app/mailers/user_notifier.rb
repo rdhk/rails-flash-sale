@@ -6,7 +6,6 @@ class UserNotifier < ApplicationMailer
   #   en.user_notifier.verification_mail.subject
   #
 
-  # just name as verification_mail
   def verification_mail(user)
     @user = user
     mail to: user.email , subject: 'FlashSale Account Verification'
@@ -18,7 +17,6 @@ class UserNotifier < ApplicationMailer
   #   en.user_notifier.send_password_change_token.subject
   #
 
-  #same as above
   def password_reset(user)
     @user = user
     mail to: user.email , subject: 'FlashSale Password Reset Instructions'

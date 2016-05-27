@@ -1,5 +1,5 @@
-<% #FIXME_AB: if signed_in? -%>
-<% if current_user %>
+<% #FIXME_AB: filename should be login_options-%>
+<% if signed_in? %>
     <li><%= current_user.email %></li>
     <li><%= link_to "Log out", logout_path, method: "delete" %></li>
 <% else %>
