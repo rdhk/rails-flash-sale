@@ -1,6 +1,6 @@
 <div class="form-horizontal">
   <%= form_for(:password_reset, url: password_resets_path) do |f| %>
-  <%= render partial: 'shared/obj', object: @user %>
+  <%= render partial: 'shared/form_errors', locals: {obj: @user} %>
   <fieldset>
     <div class="form-group">
       <%= f.label :password, class: "col-lg-2 control-label" %>

@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   validates :password, length: { minimum: 6 }, if: "password_required.present?"
   validates :email, format: { with: REGEX[:email] }
   #FIXME_AB: always think for case sensitivity when you use uniqueness
-  validates :email, uniqueness: true
+  validates :email, uniqueness: true, case_sensitive: false
 
   after_commit :send_verification_email, on: :create, if: "!admin"
   before_create :generate_verification_token, if: "!admin"
@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
   def fulfill_forgot_password_request
     generate_token(:password_change_token)
     #FIXME_AB: Don't hardcode 3. 3.hours.from_now
-    self.password_token_expires_at = Time.current + 3.hours
+    self.password_token_expires_at = PASSWORD_TOKEN_EXPIRES_IN.hours.from_now
     save!
     UserNotifier.password_reset(self).deliver
   end

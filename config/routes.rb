@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   delete 'logout' => 'sessions#destroy'
 
   #FIXME_AB: we don't need all routes for user
-  resources :users
+  resources :users, only: [:new, :create]
 
 
   root 'homepage#index'
