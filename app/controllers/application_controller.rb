@@ -32,8 +32,7 @@ class ApplicationController < ActionController::Base
   def find_current_user
     if session[:user_id]
       User.find(session[:user_id])
-    elsif(cookies[:remember_me_token].present?)
-      user = User.find_by_remember_me_token(cookies[:remember_me_token])
+    elsif(cookies[:remember_me_token].present? && (user = User.find_by_remember_me_token(cookies[:remember_me_token])))
       sign_in(user)
       user
     end

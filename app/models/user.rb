@@ -8,13 +8,16 @@ class User < ActiveRecord::Base
   validates :first_name, :last_name, :email, presence: true
   validates :password, length: { minimum: 6 }, if: "password_required.present?"
   validates :email, format: { with: REGEX[:email] }
-  #FIXME_AB: always think for case sensitivity when you use uniqueness
   validates :email, uniqueness: true, case_sensitive: false
 
   after_commit :send_verification_email, on: :create, if: "!admin"
   before_create :generate_verification_token, if: "!admin"
   before_validation :set_password_required, on: :create
 
+
+  def is_admin?
+    admin
+  end
 
   def valid_authenticity_token?
     verification_token_expires_at >= Time.current

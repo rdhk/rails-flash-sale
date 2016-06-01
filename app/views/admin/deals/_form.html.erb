@@ -1,0 +1,55 @@
+<div class="form-horizontal">
+  <%= form_for [:admin, @deal] do |f| %>
+  <%= render partial: 'shared/form_errors', locals: {obj: @deal} %>
+  <fieldset>
+    <legend><%= @deal.persisted? ? "Edit Deal" : "New Deal" %></legend>
+    <div class="form-group">
+      <%= f.label :title, class: "col-lg-2 control-label req" %>
+      <div class="col-lg-4">
+        <%= f.text_field :title, class: "form-control", required: true %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :description, class: "col-lg-2 control-label" %>
+      <div class="col-lg-4">
+        <%= f.text_area :description, class: "form-control" %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :price, class: "col-lg-2 control-label" %>
+      <div class="col-lg-4">
+        <%= f.number_field :price, class: "form-control" %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :discounted_price, class: "col-lg-2 control-label" %>
+      <div class="col-lg-4">
+        <%= f.number_field :discounted_price, class: "form-control" %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :quantity, class: "col-lg-2 control-label" %>
+      <div class="col-lg-4">
+        <%= f.number_field :quantity, class: "form-control"%>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :publish_date, class: "col-lg-2 control-label" %>
+      <div class="col-lg-4">
+        <%= f.date_select :publish_date, {:include_blank => true, :default => nil} %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :publishable, "Publish", class: "col-lg-2 control-label" %>
+      <div class="col-lg-1">
+        <%= f.check_box :publishable, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="actions col-lg-offset-2">
+      <%= f.submit  %>
+    </div>
+  </fieldset>
+  <% end %>
+</div>

@@ -2,7 +2,7 @@
   <%= form_for(:password_request, url: password_requests_path) do |f| %>
   <fieldset>
     <div class="form-group">
-      <%= f.label :email, class: "col-lg-2 control-label" %>
+      <%= f.label :email, class: "col-lg-2 control-label req" %>
       <div class="col-lg-4">
         <%= f.email_field :email, class: "form-control", required: true %>
       </div>

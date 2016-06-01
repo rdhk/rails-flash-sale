@@ -1,5 +1,40 @@
 Rails.application.routes.draw do
 
+  namespace :admin do
+    resources :deals do
+      member do
+        get 'unpublish'
+        get 'publish'
+      end
+    end
+    # get 'deals/unpublish/:id' => 'deals#unpublish'
+    # get 'deals/publish/:id' => 'deals#publish'
+  end
+
+  # namespace :admin do
+  # post 'deals', to: 'deals#create'
+  # end
+
+  # namespace :admin do
+  # get 'deals/update'
+  # end
+
+  # namespace :admin do
+  # get 'deals/edit'
+  # end
+
+  # namespace :admin do
+  # get 'deals/destroy'
+  # end
+
+  # namespace :admin do
+  # get 'deals/show'
+  # end
+
+  # namespace :admin do
+  # get 'deals/index'
+  # end
+
   get 'homepage/index'
 
   get 'activation/:token' => 'users#activate', as: 'activate'

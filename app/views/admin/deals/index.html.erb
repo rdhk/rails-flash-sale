@@ -1,0 +1,63 @@
+<h1>Listing Deals</h1>
+<table class= "table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Price(Rs)</th>
+      <th>Discounted Price(Rs)</th>
+      <th>Quantity</th>
+      <th>Publish Date</th>
+      <th>Publishable</th>
+      <th> Actions </th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @deals.each do |deal| %>
+    <tr>
+      <td><%= deal.title %></td>
+      <td><%= deal.price %></td>
+      <td><%= deal.discounted_price %></td>
+      <td><%= deal.quantity %></td>
+      <td><%= deal.publish_date.to_date.to_formatted_s(:long) if deal.publish_date.present?%></td>
+      <td>
+        <div data-behaviour="publishable" class = <%= deal.publishable ? "shown" : "hidden" %> >
+          <span class="label label-success">
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </span>
+          <%= link_to "Unpublish", unpublish_admin_deal_path(deal), format: :json, remote: true, class:"btn btn-danger btn-sm" %>
+          <i class="fa fa-spinner fa-pulse fa-2x fa-fw hidden"></i>
+        </div>
+        <div data-behaviour="unpublishable" class=<%= deal.publishable ? "hidden" : "shown" %> >
+          <span class="label label-danger">
+            <i class="fa fa-remove" aria-hidden="true"></i>
+          </span>
+          <%= link_to "Check publishablity", publish_admin_deal_path(deal), format: :json, remote: true , class:"btn btn-success btn-sm" %>
+          <i class="fa fa-spinner fa-pulse fa-fw fa-2x hidden"></i>
+        </div>
+      </td>
+      <td><%= link_to 'Show', admin_deal_path(deal) %></td>
+      <td><%= link_to 'Edit', edit_admin_deal_path(deal) %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<%= javascript_include_tag 'admin/deals' %>
+<%= stylesheet_link_tag 'admin/deals' %>
