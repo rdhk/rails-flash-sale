@@ -1,4 +1,3 @@
-<% #FIXME_AB: merge _alert and _notice and make only one _flash which will show all three -%>
 <% if alert %>
   <p class="alert alert-danger"><%= alert %></p>
 <% end %>
@@ -6,5 +5,7 @@
   <p class="alert alert-success"><%= notice %></p>
 <% end %>
 <% if flash[:errors] %>
-  <p class="alert alert-danger"><%= errors %></p>
+  <% flash[:errors].each do |error| %>
+    <p class="alert alert-danger"><%= error %></p>
+  <% end %>
 <% end %>

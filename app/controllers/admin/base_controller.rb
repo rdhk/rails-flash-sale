@@ -1,5 +1,4 @@
-#FIXME_AB: Admin::BaseController
-class Admin::BasesController < ApplicationController
+class Admin::BaseController < ApplicationController
   layout 'admin'
   include AdminAuthorization
   before_action :authenticate, :authorize_admin

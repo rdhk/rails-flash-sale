@@ -7,35 +7,7 @@ Rails.application.routes.draw do
         get 'publish'
       end
     end
-    # get 'deals/unpublish/:id' => 'deals#unpublish'
-    # get 'deals/publish/:id' => 'deals#publish'
   end
-
-  # namespace :admin do
-  # post 'deals', to: 'deals#create'
-  # end
-
-  # namespace :admin do
-  # get 'deals/update'
-  # end
-
-  # namespace :admin do
-  # get 'deals/edit'
-  # end
-
-  # namespace :admin do
-  # get 'deals/destroy'
-  # end
-
-  # namespace :admin do
-  # get 'deals/show'
-  # end
-
-  # namespace :admin do
-  # get 'deals/index'
-  # end
-
-  get 'homepage/index'
 
   get 'activation/:token' => 'users#activate', as: 'activate'
   resources :password_requests, only: [:new, :create]
@@ -48,7 +20,6 @@ Rails.application.routes.draw do
   post 'login' => 'sessions#create'
   delete 'logout' => 'sessions#destroy'
 
-  #FIXME_AB: we don't need all routes for user
   resources :users, only: [:new, :create]
 
 

@@ -5,11 +5,13 @@
       <th>Title</th>
       <th>Price(Rs)</th>
       <th>Discounted Price(Rs)</th>
+      <th>Creator</th>
+      <th>Publisher</th>
       <th>Quantity</th>
       <th>Publish Date</th>
       <th>Publishable</th>
       <th> Actions </th>
-      <th colspan="2"></th>
+      <th colspan="3"></th>
     </tr>
   </thead>
   <tbody>
@@ -18,6 +20,8 @@
       <td><%= deal.title %></td>
       <td><%= deal.price %></td>
       <td><%= deal.discounted_price %></td>
+      <td><%= deal.creator.email if deal.creator%></td>
+      <td data-behaviour ="publisher"><%= deal.publisher.email if deal.publisher %></td>
       <td><%= deal.quantity %></td>
       <td><%= deal.publish_date.to_date.to_formatted_s(:long) if deal.publish_date.present?%></td>
       <td>
@@ -25,39 +29,28 @@
           <span class="label label-success">
             <i class="fa fa-check" aria-hidden="true"></i>
           </span>
-          <%= link_to "Unpublish", unpublish_admin_deal_path(deal), format: :json, remote: true, class:"btn btn-danger btn-sm" %>
+          <%= link_to "Unpublish", unpublish_admin_deal_path(deal), format: :json, remote: true, data: {disable: true}, class:"btn btn-danger btn-sm" %>
           <i class="fa fa-spinner fa-pulse fa-2x fa-fw hidden"></i>
         </div>
         <div data-behaviour="unpublishable" class=<%= deal.publishable ? "hidden" : "shown" %> >
           <span class="label label-danger">
             <i class="fa fa-remove" aria-hidden="true"></i>
           </span>
-          <%= link_to "Check publishablity", publish_admin_deal_path(deal), format: :json, remote: true , class:"btn btn-success btn-sm" %>
+          <%= link_to "Check publishablity", publish_admin_deal_path(deal), format: :json, remote: true, data: {disable: true} , class:"btn btn-success btn-sm" %>
           <i class="fa fa-spinner fa-pulse fa-fw fa-2x hidden"></i>
         </div>
       </td>
       <td><%= link_to 'Show', admin_deal_path(deal) %></td>
       <td><%= link_to 'Edit', edit_admin_deal_path(deal) %></td>
+       <td><%= link_to 'Destroy', admin_deal_path(deal), method: :delete, data: { confirm: 'Are you sure?' } %></td>
     </tr>
     <% end %>
   </tbody>
 </table>
 <br>
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<%= javascript_include_tag 'admin/deals' %>
-<%= stylesheet_link_tag 'admin/deals' %>
+
+<% content_for :head do %>
+  <%= javascript_include_tag 'admin/deals' %>
+  <%= stylesheet_link_tag 'admin/deals' %>
+<% end %>
+

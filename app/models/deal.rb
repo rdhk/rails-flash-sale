@@ -1,6 +1,28 @@
+# == Schema Information
+#
+# Table name: deals
+#
+#  id               :integer          not null, primary key
+#  title            :string(255)      not null
+#  description      :string(255)
+#  price            :integer
+#  discounted_price :integer
+#  quantity         :integer
+#  publish_date     :datetime
+#  publishable      :boolean          default(FALSE)
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  creator_id       :integer
+#  publisher_id     :integer
+#
+# Indexes
+#
+#  index_deals_on_creator_id    (creator_id)
+#  index_deals_on_publisher_id  (publisher_id)
+#
+
 class Deal < ActiveRecord::Base
 
-  scope :publishable, -> {where(publishable: true)}
 
   validates :title, presence: true
 
@@ -8,7 +30,6 @@ class Deal < ActiveRecord::Base
   validates :price, numericality: { greater_than: 0 }, allow_blank: true
   validates :discounted_price, presence:true, if: :price?
   validates :discounted_price, numericality: { greater_than: 0 }, allow_blank: true
-  #FIXME_AB: make us of with_option - done
   validates_with PublishTimeValidator, DiscountedPriceValidator
 
   with_options if: :publishable? do |deal|
@@ -17,39 +38,65 @@ class Deal < ActiveRecord::Base
   end
 
 
-  before_update :can_be_edited?
+  belongs_to :publisher, -> { where admin: true }, class_name: "User", foreign_key: "publisher_id"
+  belongs_to :creator, -> { where admin: true }, class_name: "User", foreign_key: "creator_id"
 
-  def publish
+  scope :publishable, -> { where(publishable: true) }
+
+  before_update :can_be_edited?
+  before_destroy :can_be_destroyed?
+
+
+  def can_be_destroyed?
+    if(invalid_publish_time?)
+      errors[:base] << title + " can't be destoyed " + MIN_TIME_TO_PUBLISH.to_s + " hours prior to publish date and later."
+      false
+    end
+  end
+
+  def set_creator(current_user)
+    self.creator = current_user
+  end
+
+  def set_publisher(current_user)
+    if self.publishable
+      self.publisher = current_user
+    end
+  end
+
+  def publish(current_user)
     self.publishable = true
+    self.publisher = current_user
     save
   end
 
   def unpublish
     self.publishable = false
+    self.publisher = nil
     save
   end
 
-  #FIXME_AB: publish_time
   def publish_time
     if(publish_date)
       publish_date + DAILY_PUBLISH_TIME.hours
     end
   end
 
+  def invalid_publish_time?
+    publish_time && ((publish_time) < MIN_TIME_TO_PUBLISH.hours.from_now)
+  end
+
   def invalid_discounted_price?
     discounted_price && price && (discounted_price > price)
   end
 
-  #FIXME_AB: deal.can_be_edited?
   def can_be_edited?
-    #FIXME_AB: if changes.include?(:publish_date) && publish_date_was ...
-    if changes.include?(:publish_date) && ((publish_date_was + DAILY_PUBLISH_TIME.hours - Time.current) < MINIMUM_TIME_BEFORE_DEAL_CHANGE.hours)
-      errors[:publish_date] << "can't be changed before #{MINIMUM_TIME_BEFORE_DEAL_CHANGE} hours of old date."
+    if changes.include?(:publish_date) && ((publish_date_was + DAILY_PUBLISH_TIME.hours) < MIN_TIME_TO_PUBLISH.hours.from_now)
+      errors[:publish_date] << "can't be changed before #{MIN_TIME_TO_PUBLISH} hours of old date."
       false
     end
   end
 
-  #FIXME_AB: publishable_deals_on(date = Date.current)
   def publishable_deals_on(date = Date.current)
     Deal.publishable.where(publish_date: date).count
   end

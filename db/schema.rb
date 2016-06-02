@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160530063441) do
+ActiveRecord::Schema.define(version: 20160602092837) do
 
   create_table "deals", force: :cascade do |t|
     t.string   "title",            limit: 255,                 null: false
@@ -23,7 +23,12 @@ ActiveRecord::Schema.define(version: 20160530063441) do
     t.boolean  "publishable",                  default: false
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
+    t.integer  "creator_id",       limit: 4
+    t.integer  "publisher_id",     limit: 4
   end
+
+  add_index "deals", ["creator_id"], name: "index_deals_on_creator_id", using: :btree
+  add_index "deals", ["publisher_id"], name: "index_deals_on_publisher_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "first_name",                    limit: 255,                 null: false
@@ -40,5 +45,7 @@ ActiveRecord::Schema.define(version: 20160530063441) do
     t.datetime "created_at",                                                null: false
     t.datetime "updated_at",                                                null: false
   end
+
+  add_index "users", ["email"], name: "index_users_on_email", using: :btree
 
 end

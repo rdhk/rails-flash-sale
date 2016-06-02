@@ -1,14 +1,42 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id                            :integer          not null, primary key
+#  first_name                    :string(255)      not null
+#  last_name                     :string(255)      not null
+#  email                         :string(255)      not null
+#  password_digest               :string(255)      not null
+#  admin                         :boolean          default(FALSE)
+#  verification_token            :string(255)
+#  verification_token_expires_at :datetime
+#  verified_at                   :datetime
+#  password_change_token         :string(255)
+#  password_token_expires_at     :datetime
+#  remember_me_token             :string(255)
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
+#
+# Indexes
+#
+#  index_users_on_email  (email)
+#
+
 class User < ActiveRecord::Base
   has_secure_password
 
   attr_accessor :password_required
 
-  scope :verified, -> {where.not(verified_at: nil)}
 
   validates :first_name, :last_name, :email, presence: true
   validates :password, length: { minimum: 6 }, if: "password_required.present?"
   validates :email, format: { with: REGEX[:email] }
   validates :email, uniqueness: true, case_sensitive: false
+
+  has_many :published_deals, class_name: "Deal", foreign_key: "publisher_id"
+  has_many :created_deals, class_name: "Deal", foreign_key: "creator_id"
+
+  scope :verified, -> {where.not(verified_at: nil)}
 
   after_commit :send_verification_email, on: :create, if: "!admin"
   before_create :generate_verification_token, if: "!admin"
@@ -41,8 +69,7 @@ class User < ActiveRecord::Base
 
   def fulfill_forgot_password_request
     generate_token(:password_change_token)
-    #FIXME_AB: Don't hardcode 3. 3.hours.from_now
-    self.password_token_expires_at = PASSWORD_TOKEN_EXPIRES_IN.hours.from_now
+    self.password_token_expires_at = CONSTANTS[password_token_expires_in].hours.from_now
     save!
     UserNotifier.password_reset(self).deliver
   end

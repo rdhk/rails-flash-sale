@@ -8,6 +8,8 @@ gem 'mysql2'
 
 gem "font-awesome-rails"
 
+# gem "nested_form"
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -46,5 +48,6 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  gem 'annotate'
 end
 
