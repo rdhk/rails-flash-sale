@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160602092837) do
+ActiveRecord::Schema.define(version: 20160602131220) do
 
   create_table "deals", force: :cascade do |t|
     t.string   "title",            limit: 255,                 null: false
@@ -29,6 +29,14 @@ ActiveRecord::Schema.define(version: 20160602092837) do
 
   add_index "deals", ["creator_id"], name: "index_deals_on_creator_id", using: :btree
   add_index "deals", ["publisher_id"], name: "index_deals_on_publisher_id", using: :btree
+
+  create_table "images", force: :cascade do |t|
+    t.string   "file_file_name",    limit: 255
+    t.string   "file_content_type", limit: 255
+    t.integer  "file_file_size",    limit: 4
+    t.datetime "file_updated_at"
+    t.integer  "deal_id",           limit: 4
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "first_name",                    limit: 255,                 null: false

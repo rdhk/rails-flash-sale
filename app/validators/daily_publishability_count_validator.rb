@@ -1,4 +1,4 @@
-class PublishabilityCountValidator < ActiveModel::Validator
+class DailyPublishabilityCountValidator < ActiveModel::Validator
 
   def validate(record)
     if(record.publishable_deals_on(record.publish_date) >= MAX_DEALS_PER_DAY)

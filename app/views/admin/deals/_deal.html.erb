@@ -4,6 +4,17 @@
   </div>
   <div class="panel-body">
     <div class="list-group">
+      <ul>
+        <% if deal.images.present? %>
+        <table class="table table-bordered">
+          <tr>
+            <% deal.images.each do |pic| %>
+              <td><%= link_to image_tag(pic.file.url(:thumb), class: "img-responsive"), pic.file.url, target: "_blank" %></td>
+            <% end %>
+          </tr>
+        </table>
+        <% end %>
+      </ul>
       <a href="#" class="list-group-item">
         <h4 class="list-group-item-heading">Title</h4>
         <p class="list-group-item-text"><%= deal.title%></p>

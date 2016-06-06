@@ -1,5 +1,5 @@
 <div class="form-horizontal">
-  <%= form_for [:admin, @deal] do |f| %>
+  <%= nested_form_for [:admin, @deal], html: { multipart: true } do |f| %>
   <%= render partial: 'shared/form_errors', locals: {obj: @deal} %>
   <fieldset>
     <legend><%= @deal.persisted? ? "Edit Deal" : "New Deal" %></legend>
@@ -11,8 +11,8 @@
     </div>
     <div class="form-group">
       <%= f.label :description, class: "col-lg-2 control-label" %>
-      <div class="col-lg-4">
-        <%= f.text_area :description, class: "form-control" %>
+      <div class="col-lg-7">
+        <%= f.text_area :description, class: "form-control", rows: 15 %>
       </div>
     </div>
     <div class="form-group">
@@ -40,6 +40,18 @@
       </div>
     </div>
 
+    <%= f.fields_for :images do |image_form| %>
+      <% if image_form.object.file_file_size.present? %>
+        <%= image_tag(image_form.object.file.url(:thumb)) %>
+      <% else %>
+        <%= image_form.file_field :file %>
+      <% end %>
+      <%= image_form.link_to_remove '<i class="fa fa-trash" aria-hidden="true"></i>'.html_safe, class: "btn btn-danger btn-xs pull-right" %>
+    <% end %>
+    <p><%= f.link_to_add '<i class="fa fa-plus" aria-hidden="true"></i>
+ Add an image'.html_safe, :images, class: "btn btn-primary" %></p>
+    <label class = "req"> Only gif, jpeg ang png formats are allowed </label>
+
     <div class="form-group">
       <%= f.label :publishable, "Publish", class: "col-lg-2 control-label" %>
       <div class="col-lg-1">
@@ -48,7 +60,7 @@
     </div>
 
     <div class="actions col-lg-offset-2">
-      <%= f.submit  %>
+      <%= f.submit %>
     </div>
   </fieldset>
   <% end %>

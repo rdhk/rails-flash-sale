@@ -8,7 +8,9 @@ gem 'mysql2'
 
 gem "font-awesome-rails"
 
-# gem "nested_form"
+gem "nested_form"
+
+gem "paperclip", "~> 5.0.0.beta1"
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'

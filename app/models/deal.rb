@@ -34,12 +34,15 @@ class Deal < ActiveRecord::Base
 
   with_options if: :publishable? do |deal|
     deal.validates :title, :description, :price, :discounted_price, :quantity, :publish_date, presence: true
-    deal.validates_with PublishabilityQtyValidator, PublishabilityCountValidator
+    deal.validates_with PublishabilityQtyValidator, DailyPublishabilityCountValidator, ImagesCountValidator
   end
 
+  #FIXME_AB: PublishabilityCountValidator to DailyPublishabilityCountValidator
 
   belongs_to :publisher, -> { where admin: true }, class_name: "User", foreign_key: "publisher_id"
   belongs_to :creator, -> { where admin: true }, class_name: "User", foreign_key: "creator_id"
+  has_many :images, dependent: :destroy
+  accepts_nested_attributes_for :images, :allow_destroy => true
 
   scope :publishable, -> { where(publishable: true) }
 
@@ -91,7 +94,7 @@ class Deal < ActiveRecord::Base
   end
 
   def can_be_edited?
-    if changes.include?(:publish_date) && ((publish_date_was + DAILY_PUBLISH_TIME.hours) < MIN_TIME_TO_PUBLISH.hours.from_now)
+    if changes.include?(:publish_date) && publish_date_was && ((publish_date_was + DAILY_PUBLISH_TIME.hours) < MIN_TIME_TO_PUBLISH.hours.from_now)
       errors[:publish_date] << "can't be changed before #{MIN_TIME_TO_PUBLISH} hours of old date."
       false
     end

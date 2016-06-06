@@ -3,7 +3,8 @@ class Admin::DealsController < Admin::BaseController
   before_action :set_deal, only: [:edit, :update, :show, :unpublish, :publish, :destroy]
 
   def index
-    @deals = Deal.all
+    #FIXME_AB: eagerload user - done
+    @deals = Deal.includes(:creator, :publisher)
   end
 
   def show
@@ -14,22 +15,24 @@ class Admin::DealsController < Admin::BaseController
   end
 
   def create
-    @deal = Deal.new(deal_params)
-    @deal.set_creator(current_user)
+    #FIXME_AB: current_user.created_deals.new - done
+    @deal = current_user.created_deals.build(deal_params)
     @deal.set_publisher(current_user)
-    # assign_creator_publisher
     if @deal.save
       redirect_to admin_deal_path(@deal), notice: "Deal successfully created"
     else
+      @deal.images = []
       render action: 'new'
     end
   end
 
   def update
-    @deal.set_publisher
+    @deal.set_publisher(current_user)
+    # debugger
     if @deal.update(deal_params)
       redirect_to admin_deal_path(@deal), notice: "Deal successfully updated."
     else
+    @deal.images = @deal.images.select { |img| img.file_file_size.present? }
       render action: 'edit'
     end
   end
@@ -58,24 +61,12 @@ class Admin::DealsController < Admin::BaseController
   private
 
 
-  # def assign_creator_publisher
-  #   @deal.creator = current_user
-  #   assign_publisher
-  # end
-
-  # def assign_publisher
-  #   if(params[:deal][:publishable] == "1")
-  #     @deal.publisher = current_user
-  #   end
-  # end
-
-
   def deal_params
-    params.require(:deal).permit(:title, :description, :price, :discounted_price, :quantity, :publish_date, :publishable)
+    params.require(:deal).permit(:title, :description, :price, :discounted_price, :quantity, :publish_date, :publishable, images_attributes: [:file, :id, :_destroy])
   end
 
   def set_deal
-    @deal = Deal.find_by_id(params[:id])
+    @deal = Deal.find_by(id: params[:id])
     if @deal.nil?
       redirect_to admin_deals_path, alert: "Sorry, deal not found."
     end
