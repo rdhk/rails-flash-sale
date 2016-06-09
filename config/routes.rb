@@ -9,6 +9,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :deals, only: [:index, :show]
+  resources :orders
   get 'activation/:token' => 'users#activate', as: 'activate'
   resources :password_requests, only: [:new, :create]
   resources :password_resets, only: [:new, :create]
@@ -22,8 +24,9 @@ Rails.application.routes.draw do
 
   resources :users, only: [:new, :create]
 
-
-  root 'homepage#index'
+#FIXME_AB: make a route for /admin - done
+  get '/admin' => 'admin/deals#index'
+  root 'deals#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

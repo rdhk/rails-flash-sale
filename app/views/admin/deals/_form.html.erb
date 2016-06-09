@@ -46,10 +46,15 @@
       <% else %>
         <%= image_form.file_field :file %>
       <% end %>
-      <%= image_form.link_to_remove '<i class="fa fa-trash" aria-hidden="true"></i>'.html_safe, class: "btn btn-danger btn-xs pull-right" %>
+      <%= image_form.link_to_remove class: "btn btn-danger btn-xs pull-right" do %>
+      <i class="fa fa-trash" aria-hidden="true"></i>
+      <% end %>
     <% end %>
-    <p><%= f.link_to_add '<i class="fa fa-plus" aria-hidden="true"></i>
- Add an image'.html_safe, :images, class: "btn btn-primary" %></p>
+    <p><%= f.link_to_add :images, class: "btn btn-primary" do %>
+      <i class="fa fa-plus" aria-hidden="true"></i>
+      Add an image
+    <% end %>
+    </p>
     <label class = "req"> Only gif, jpeg ang png formats are allowed </label>
 
     <div class="form-group">

@@ -1,0 +1,9 @@
+<div class="jumbotron">
+  <h1>Welcome to the Flash Sale!</h1>
+  <p>Get amazing discounts on amazing products. The more you shop, more discounts you get! Checkout today's live deals! Deal only valid for a short time. So, HURRY UP! </p>
+  <!-- <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p> -->
+</div>
+<%= render @deals %>
+<% content_for :head do %>
+  <%= stylesheet_link_tag 'deals' %>
+<% end %>

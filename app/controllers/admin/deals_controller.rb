@@ -3,7 +3,6 @@ class Admin::DealsController < Admin::BaseController
   before_action :set_deal, only: [:edit, :update, :show, :unpublish, :publish, :destroy]
 
   def index
-    #FIXME_AB: eagerload user - done
     @deals = Deal.includes(:creator, :publisher)
   end
 
@@ -15,7 +14,6 @@ class Admin::DealsController < Admin::BaseController
   end
 
   def create
-    #FIXME_AB: current_user.created_deals.new - done
     @deal = current_user.created_deals.build(deal_params)
     @deal.set_publisher(current_user)
     if @deal.save

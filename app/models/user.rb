@@ -35,6 +35,7 @@ class User < ActiveRecord::Base
 
   has_many :published_deals, class_name: "Deal", foreign_key: "publisher_id"
   has_many :created_deals, class_name: "Deal", foreign_key: "creator_id"
+  has_many :orders
 
   scope :verified, -> {where.not(verified_at: nil)}
 
