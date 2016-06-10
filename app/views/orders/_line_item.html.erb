@@ -1,6 +1,7 @@
-<li class="row">
-  <span class="quantity">1</span>
-  <span class="itemName"><%= line_item.deal.title %></span>
-  <span class="popbtn"  data-parent="#asd" data-toggle="collapse" data-target="#demo"><a class="arrow"></a></span>
-  <span class="price"><%= line_item.deal.price %></span>
-</li>
+<tr>
+  <td>1</td>
+  <td><%= line_item.deal.title %></td>
+  <td><%= number_to_currency(line_item.deal.discounted_price, unit: "Rs")  %></td>
+  <td data-li-id = <%= line_item.id %> ><%= link_to "delete", {controller: "orders", action: "remove_item", line_item: line_item.id}, class: "btn btn-sm btn-danger", format: :json, method: :post, remote: true %>
+  </td>
+</tr>

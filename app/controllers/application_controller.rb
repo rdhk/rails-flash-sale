@@ -5,6 +5,13 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user, :signed_in?
 
+  def set_deal
+    @deal = Deal.find_by(id: params[:id])
+    if @deal.nil?
+      redirect_to root_path, alert: "Sorry, deal not found."
+    end
+  end
+
   def ensure_anonymous
     if(signed_in?)
       redirect_to root_path, alert: "You are already signed in, the page you were trying to access is accessible to anonymous users only. You may logout and try again."

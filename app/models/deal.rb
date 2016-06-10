@@ -57,6 +57,10 @@ class Deal < ActiveRecord::Base
     (changes.length == 1) && changes[:live]
   end
 
+  def expired?
+    live.blank?
+  end
+
   #FIXME_AB: scope - done
   # def self.find_recent_past_deals(current_day = Date.today)
   #   self.past_publishable.order(publish_date: :desc, created_at: :desc).limit(2)

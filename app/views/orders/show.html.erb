@@ -1,15 +1,13 @@
-<h1>Orders#show</h1>
-<p>Find me in app/views/orders/show.html.erb</p>
-<div class="col-md-7 col-sm-12 text-left">
-  <ul>
-    <li class="row list-inline columnCaptions">
-      <span>QTY</span>
-      <span>ITEM</span>
-      <span>Price</span>
-    </li>
-    <%= render partial: 'orders/line_item', collection: @order.line_items %>
-  </ul>
+<%= render @order %>
+<div class = "row">
+  <div class="text-left col-md-6">
+    <% #FIXME_AB: better to use do end  -%>
+    <%= link_to deals_path do %>
+    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back to deals
+    <% end %>
+  </div>
+  <div class="text-right col-md-6">
+    <% #FIXME_AB: buynow_or_expired_button(@deal) -%>
+    <%= pay_now_button(@order) %>
+  </div>
 </div>
-<% content_for :head do %>
-  <%= stylesheet_link_tag 'orders' %>
-<% end %>

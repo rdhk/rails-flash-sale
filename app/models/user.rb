@@ -36,6 +36,7 @@ class User < ActiveRecord::Base
   has_many :published_deals, class_name: "Deal", foreign_key: "publisher_id"
   has_many :created_deals, class_name: "Deal", foreign_key: "creator_id"
   has_many :orders
+  has_many :deals, through: :orders
 
   scope :verified, -> {where.not(verified_at: nil)}
 
@@ -43,6 +44,18 @@ class User < ActiveRecord::Base
   before_create :generate_verification_token, if: "!admin"
   before_validation :set_password_required, on: :create
 
+
+  def get_current_order
+    order = orders.pending.first
+
+    if(order.nil?)
+      order = orders.build
+    else
+      order.clear_expired_deals
+    end
+
+    order
+  end
 
   def is_admin?
     admin

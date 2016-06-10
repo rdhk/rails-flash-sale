@@ -6,6 +6,8 @@ gem 'rails', '4.2.6'
 # Use sqlite3 as the database for Active Record
 gem 'mysql2'
 
+gem 'stripe'
+
 gem "font-awesome-rails"
 
 gem "nested_form"

@@ -1,0 +1,25 @@
+<% order.reload %>
+<h1 class="text-center">Your Order</h1>
+<div class="col-md-offset-2 col-md-7 col-sm-12 text-left">
+  <table class="table table-hover table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Qty</th>
+      <th>Item</th>
+      <th>Price</th>
+      <th>Remove</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render partial: 'orders/line_item', collection: order.line_items %>
+    <tr>
+      <td colspan="2"><strong>Total</strong></td>
+      <td colspan="2" data-behaviour="total"><strong><%= number_to_currency(order.calculate_total, unit: "Rs") %></strong></td>
+    </tr>
+  </tbody>
+  </table>
+</div>
+<% content_for :head do %>
+  <%= stylesheet_link_tag 'orders' %>
+  <%= javascript_include_tag 'orders' %>
+<% end %>

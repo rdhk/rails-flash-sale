@@ -9,8 +9,16 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :charges, only: [:new, :created]
   resources :deals, only: [:index, :show]
-  resources :orders
+  resources :orders do
+    member do
+      get 'checkout'
+      post 'paid'
+    end
+  end
+  post 'orders/add_item'
+  post 'orders/remove_item'
   get 'activation/:token' => 'users#activate', as: 'activate'
   resources :password_requests, only: [:new, :create]
   resources :password_resets, only: [:new, :create]
