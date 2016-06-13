@@ -24,9 +24,7 @@
 
 class Deal < ActiveRecord::Base
 
-#FIXME_AB: make publish_date a date field - done
   validates :title, presence: true
-
   validates :price, presence:true, if: :discounted_price?
   validates :price, numericality: { greater_than: 0 }, allow_blank: true
   validates :discounted_price, presence:true, if: :price?
@@ -43,11 +41,13 @@ class Deal < ActiveRecord::Base
   belongs_to :creator, -> { where admin: true }, class_name: "User", foreign_key: "creator_id"
   has_many :images, dependent: :destroy
   has_many :line_items
+
   accepts_nested_attributes_for :images, :allow_destroy => true
 
   scope :publishable, -> { where(publishable: true) }
   scope :past_publishable, -> { publishable.where("publish_date < ?", Date.today)}
   scope :live, -> { where(live: true) }
+  #FIXME_AB: don't hardcode 2 as limit. Take an argument, which is default to 2
   scope :recent_past_deals, -> { past_publishable.order(publish_date: :desc, created_at: :desc).limit(2) }
 
   before_update :can_be_edited?
@@ -60,12 +60,6 @@ class Deal < ActiveRecord::Base
   def expired?
     live.blank?
   end
-
-  #FIXME_AB: scope - done
-  # def self.find_recent_past_deals(current_day = Date.today)
-  #   self.past_publishable.order(publish_date: :desc, created_at: :desc).limit(2)
-  # end
-
 
   def self.reset_live_deals
     if(CONSTANTS["daily_publish_time"].hours.ago > Time.current.beginning_of_day)

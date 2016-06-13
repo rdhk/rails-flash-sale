@@ -2,6 +2,7 @@
   <td>1</td>
   <td><%= line_item.deal.title %></td>
   <td><%= number_to_currency(line_item.deal.discounted_price, unit: "Rs")  %></td>
+  <% #FIXME_AB: url helper -%>
   <td data-li-id = <%= line_item.id %> ><%= link_to "delete", {controller: "orders", action: "remove_item", line_item: line_item.id}, class: "btn btn-sm btn-danger", format: :json, method: :post, remote: true %>
   </td>
 </tr>

@@ -32,7 +32,6 @@ Rails.application.routes.draw do
 
   resources :users, only: [:new, :create]
 
-#FIXME_AB: make a route for /admin - done
   get '/admin' => 'admin/deals#index'
   root 'deals#index'
   # The priority is based upon order of creation: first created -> highest priority.

@@ -3,7 +3,6 @@
     <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
       <div class="carousel-inner" role="listbox">
         <% deal.images.each_with_index do |img, index| %>
-        <% #FIXME_AB: don't use inline styles - done -%>
         <div class='fixed-width col-md-offset-1 item <%= (index == 0) ? "active" : "" %>'>
           <%= image_tag(img.file.url(:medium), class: "img-responsive") %>
         </div>

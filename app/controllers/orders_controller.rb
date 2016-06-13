@@ -9,7 +9,6 @@ class OrdersController < ApplicationController
 
   def remove_item
     @order = current_user.get_current_order
-    #FIXME_AB: - done
     @removal_success = @order.remove_item(@line_item)
   end
 
@@ -28,6 +27,7 @@ class OrdersController < ApplicationController
     @total = @order.calculate_total
   end
 
+  #FIXME_AB: rename this action to "charge" its an action not a state. 
   def paid
     @order = Order.find(params[:id])
     @amount = @order.calculate_total*100
@@ -40,6 +40,7 @@ class OrdersController < ApplicationController
     charge = Stripe::Charge.create(
       :customer    => customer.id,
       :amount      => @amount,
+      #FIXME_AB: Use better description
       :description => 'Rails Stripe customer',
       :currency    => 'inr',
       :metadata => {:email => customer.email}
@@ -55,7 +56,6 @@ end
 private
 
 def check_valid_deal
-  #FIXME_AB: Deal.live.find_by - done
   @deal = Deal.live.find_by(id: params[:deal])
   if @deal.nil?
     redirect_to root_path, alert: "Sorry, invalid deal."

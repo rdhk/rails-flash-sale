@@ -57,10 +57,12 @@ class User < ActiveRecord::Base
     order
   end
 
+  #FIXME_AB: since we have admin a column so we can use user.admin? everywhere, hence we don't need this is_admin? 
   def is_admin?
     admin
   end
 
+  #FIXME_AB: valid_verification_toke? not authenticity
   def valid_authenticity_token?
     verification_token_expires_at >= Time.current
   end
@@ -116,6 +118,7 @@ class User < ActiveRecord::Base
 
   def generate_verification_token
     generate_token(:verification_token)
+    #FIXME_AB: Don't hardcode 6 hours
     self.verification_token_expires_at = Time.current + 6.hours
   end
 

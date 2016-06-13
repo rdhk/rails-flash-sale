@@ -13,7 +13,7 @@
 #
 
 class LineItem < ActiveRecord::Base
-
   belongs_to :order
   belongs_to :deal
+#FIXME_AB: lineitem would have many more attributes.
 end
