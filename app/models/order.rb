@@ -45,8 +45,8 @@ class Order < ActiveRecord::Base
 
   def mark_paid(transaction_params)
     self.status = 'paid'
-    #FIXME_AB: use build
-    create_payment_transaction(transaction_params)
+    #FIXME_AB: use build - done
+    build_payment_transaction(transaction_params)
     save
   end
 
