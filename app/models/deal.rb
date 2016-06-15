@@ -15,6 +15,8 @@
 #  creator_id       :integer
 #  publisher_id     :integer
 #  live             :boolean          default(FALSE)
+#  quantity_sold    :integer          default(0)
+#  lock_version     :integer          default(0)
 #
 # Indexes
 #
@@ -29,13 +31,18 @@ class Deal < ActiveRecord::Base
   validates :price, numericality: { greater_than: 0 }, allow_blank: true
   validates :discounted_price, presence:true, if: :price?
   validates :discounted_price, numericality: { greater_than: 0 }, allow_blank: true
-  validates_with PublishTimeValidator, unless: :resetting_live?
+  validates_with PublishTimeValidator, unless: lambda { |d| d.resetting_live? || d.resetting_quantities?}
   validates_with DiscountedPriceValidator
+
+  #FIXME_AB: quantity_sold validation, <=
 
   with_options if: :publishable? do |deal|
     deal.validates :title, :description, :price, :discounted_price, :quantity, :publish_date, presence: true
-    deal.validates_with PublishabilityQtyValidator, DailyPublishabilityCountValidator, ImagesCountValidator
+    deal.validates_with PublishabilityQtyValidator, ImagesCountValidator
   end
+
+  validates_with DailyPublishabilityCountValidator , if: "publishable? && changes[:quantity_sold].nil?"
+  validates :quantity_sold, numericality: {less_than_or_equal_to: ->(deal){ deal.quantity} }, if: "changes[:quantity_sold]"
 
   belongs_to :publisher, -> { where admin: true }, class_name: "User", foreign_key: "publisher_id"
   belongs_to :creator, -> { where admin: true }, class_name: "User", foreign_key: "creator_id"
@@ -47,14 +54,30 @@ class Deal < ActiveRecord::Base
   scope :publishable, -> { where(publishable: true) }
   scope :past_publishable, -> { publishable.where("publish_date < ?", Date.today)}
   scope :live, -> { where(live: true) }
-  #FIXME_AB: don't hardcode 2 as limit. Take an argument, which is default to 2
-  scope :recent_past_deals, -> { past_publishable.order(publish_date: :desc, created_at: :desc).limit(2) }
+  #FIXME_AB: don't hardcode 2 as limit. Take an argument, which is default to 2 - done but check if working
+  scope :recent_past_deals, -> (lim = 2) { past_publishable.order(publish_date: :desc, created_at: :desc).limit(lim) }
 
   before_update :can_be_edited?
   before_destroy :can_be_destroyed?
 
+  def increase_sold_qty_by(qty = 1)
+    Rails.logger.info "#"*80
+    self.quantity_sold += qty
+    save
+    debugger
+    Rails.logger.info "#"*80
+  end
+
+  def resetting_quantities?
+    (changes.length == 1) && changes[:quantity_sold]
+  end
+
   def resetting_live?
     (changes.length == 1) && changes[:live]
+  end
+
+  def sold_out?
+    (quantity - quantity_sold) == 0
   end
 
   def expired?

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160609072839) do
+ActiveRecord::Schema.define(version: 20160613115704) do
 
   create_table "deals", force: :cascade do |t|
     t.string   "title",            limit: 255,                   null: false
@@ -26,6 +26,8 @@ ActiveRecord::Schema.define(version: 20160609072839) do
     t.integer  "creator_id",       limit: 4
     t.integer  "publisher_id",     limit: 4
     t.boolean  "live",                           default: false
+    t.integer  "quantity_sold",    limit: 4,     default: 0
+    t.integer  "lock_version",     limit: 4,     default: 0
   end
 
   add_index "deals", ["creator_id"], name: "index_deals_on_creator_id", using: :btree
@@ -55,6 +57,24 @@ ActiveRecord::Schema.define(version: 20160609072839) do
   end
 
   add_index "orders", ["user_id"], name: "index_orders_on_user_id", using: :btree
+
+  create_table "payment_transactions", force: :cascade do |t|
+    t.integer  "user_id",            limit: 4,                  null: false
+    t.integer  "order_id",           limit: 4,                  null: false
+    t.string   "charge_id",          limit: 255,                null: false
+    t.string   "stripe_token",       limit: 255,                null: false
+    t.decimal  "amount",                         precision: 10, null: false
+    t.string   "currency",           limit: 255,                null: false
+    t.string   "stripe_customer_id", limit: 255,                null: false
+    t.string   "description",        limit: 255,                null: false
+    t.string   "stripe_email",       limit: 255,                null: false
+    t.string   "stripe_token_type",  limit: 255,                null: false
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
+  end
+
+  add_index "payment_transactions", ["order_id"], name: "index_payment_transactions_on_order_id", using: :btree
+  add_index "payment_transactions", ["user_id"], name: "index_payment_transactions_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "first_name",                    limit: 255,                 null: false

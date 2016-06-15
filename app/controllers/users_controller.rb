@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   def activate
     user = User.find_by_verification_token(params[:token])
 
-    if(user && user.valid_authenticity_token?)
+    if(user && user.valid_verification_token?)
       sign_in(user)
       user.mark_verified!
       redirect_to root_path, notice: "Your account has been verified and you are now logged in."

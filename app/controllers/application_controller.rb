@@ -1,4 +1,3 @@
-#FIXME_AB: Reomove all unused js and css files
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -7,8 +6,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user, :signed_in?
 
   def set_deal
-    #FIXME_AB: Dont we need to find it with live/publishable scope?
-    @deal = Deal.find_by(id: params[:id])
+    @deal = Deal.publishable.find_by(id: params[:id])
     if @deal.nil?
       redirect_to root_path, alert: "Sorry, deal not found."
     end

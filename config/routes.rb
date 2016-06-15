@@ -9,12 +9,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :charges, only: [:new, :created]
   resources :deals, only: [:index, :show]
   resources :orders do
     member do
       get 'checkout'
-      post 'paid'
+      post 'charge'
     end
   end
   post 'orders/add_item'
