@@ -26,7 +26,6 @@
       </a>
     </div>
     <div class="caption-full">
-    <% #FIXME_AB: use number_to_currency for displaying price everywhere -%>
       <h4 class="pull-right"><s> <%= number_to_currency deal.price, unit: "Rs" %></s> <%= number_to_currency deal.discounted_price, unit: "Rs" %></h4>
       <h4><a href="#"><%= deal.title %></a>
       </h4>
@@ -35,13 +34,11 @@
     <hr>
     <div class = "row">
       <div class="text-left col-md-6">
-      <% #FIXME_AB: better to use do end  -%>
         <%= link_to deals_path do %>
         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back to deals
         <% end %>
       </div>
       <div class="text-right col-md-6">
-      <% #FIXME_AB: buynow_or_expired_button(@deal) -%>
         <%= buynow_or_expired_or_soldout_button(@deal) %>
       </div>
     </div>

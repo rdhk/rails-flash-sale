@@ -13,7 +13,6 @@
 class Image < ActiveRecord::Base
   has_attached_file :file, styles: { medium: "400x400>", thumb: "100x100>", large: "650x450>" }
 
-  #FIXME_AB: in the form display user a hint which image types you are allowing - done
   validates_attachment_content_type :file, :content_type => ["image/jpg", "image/jpeg", "image/png", "image/gif"]
   validates_attachment_presence :file
 end

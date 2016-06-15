@@ -34,8 +34,6 @@ class Deal < ActiveRecord::Base
   validates_with PublishTimeValidator, unless: lambda { |d| d.resetting_live? || d.resetting_quantities?}
   validates_with DiscountedPriceValidator
 
-  #FIXME_AB: quantity_sold validation, <=
-
   with_options if: :publishable? do |deal|
     deal.validates :title, :description, :price, :discounted_price, :quantity, :publish_date, presence: true
     deal.validates_with PublishabilityQtyValidator, ImagesCountValidator
@@ -54,18 +52,15 @@ class Deal < ActiveRecord::Base
   scope :publishable, -> { where(publishable: true) }
   scope :past_publishable, -> { publishable.where("publish_date < ?", Date.today)}
   scope :live, -> { where(live: true) }
-  #FIXME_AB: don't hardcode 2 as limit. Take an argument, which is default to 2 - done but check if working
-  scope :recent_past_deals, -> (lim = 2) { past_publishable.order(publish_date: :desc, created_at: :desc).limit(lim) }
+  scope :recent_past_deals, -> (lim = 2) { past_publishable.order(publish_date: :desc).limit(lim) }
 
   before_update :can_be_edited?
   before_destroy :can_be_destroyed?
 
+
   def increase_sold_qty_by(qty = 1)
-    Rails.logger.info "#"*80
     self.quantity_sold += qty
     save
-    debugger
-    Rails.logger.info "#"*80
   end
 
   def resetting_quantities?
@@ -77,10 +72,14 @@ class Deal < ActiveRecord::Base
   end
 
   def sold_out?
-    (quantity - quantity_sold) == 0
+    #FIXME_AB: show quantity_sold in admin deal list and show page
+    #FIXME_AB: check admin end working fine, as we have made several changes in deal model
+    #FIXME_AB: rake task should be working fine- test it
+    (quantity - quantity_sold) <= 0
   end
 
   def expired?
+    #FIXME_AB: publisheable and publish_date < today
     live.blank?
   end
 

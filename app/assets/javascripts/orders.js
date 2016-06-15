@@ -2,7 +2,6 @@
 "use strict";
 
 $(document).ready(function() {
-  // FIXME_AB: User a better selector, this selector is not we use - done
   $('[data-behaviour=deletelineitem]').on('ajax:success', function(event, data) {
     var $this = $(event.target);
 
