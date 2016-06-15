@@ -10,12 +10,14 @@ Rails.application.routes.draw do
   end
 
   resources :deals, only: [:index, :show]
+  #FIXME_AB: we don't need all routes for orders
   resources :orders do
     member do
       get 'checkout'
       post 'charge'
     end
   end
+  #FIXME_AB: rest
   post 'orders/add_item'
   post 'orders/remove_item'
   get 'activation/:token' => 'users#activate', as: 'activate'

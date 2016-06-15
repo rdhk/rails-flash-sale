@@ -18,14 +18,12 @@ class Order < ActiveRecord::Base
   belongs_to :user
   has_many :line_items, dependent: :destroy
   has_many :deals, through: :line_items
-  #FIXME_AB: order should not be destroyed if it has payment_transaction - done - check thru console
   has_one :payment_transaction, dependent: :restrict_with_error
 
   enum status: [:pending, :processing, :paid]
 
   scope :pending, -> { where(status: "pending") }
 
-  #FIXME_AB: this need to be checked when order is pending or its being paid. not after that - done
   validates_with OrderPurchasabilityValidator, if: "pending? || marking_paid?"
 
   before_save :increase_sold_quantities , if: :marking_paid?
@@ -47,12 +45,12 @@ class Order < ActiveRecord::Base
 
   def mark_paid(transaction_params)
     self.status = 'paid'
+    #FIXME_AB: use build
     create_payment_transaction(transaction_params)
     save
   end
 
   def has_expired_items? #test
-    #FIXME_AB:  use any? - done
     deals.any? { |deal| deal.expired? }
   end
 

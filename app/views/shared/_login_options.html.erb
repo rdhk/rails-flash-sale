@@ -1,6 +1,5 @@
 <% if signed_in? %>
     <li><%= current_user.email %></li>
-    <% #FIXME_AB: current_pending_order - done -%>
     <% if current_pending_order %>
     <li><%= link_to order_path(current_user.orders.pending.first) do %>
         <i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i>

@@ -35,12 +35,9 @@ class User < ActiveRecord::Base
 
   has_many :published_deals, class_name: "Deal", foreign_key: "publisher_id"
   has_many :created_deals, class_name: "Deal", foreign_key: "creator_id"
-  #FIXME_AB: dependent? - done
   has_many :orders, dependent: :restrict_with_error
   has_many :paid_orders, -> { where status: Order.statuses[:paid] }, class_name: "Order"
-  #FIXME_AB: paid_deals => purchased_deals - done
   has_many :purchased_deals, through: :paid_orders, source: "deals"
-  #FIXME_AB: dependent? - done
   has_many :payment_transactions, dependent: :restrict_with_error
 
   scope :verified, -> {where.not(verified_at: nil)}
@@ -55,7 +52,6 @@ class User < ActiveRecord::Base
 
     if(order.nil?)
       order = orders.build
-      # debugger
     else
       order.clear_expired_deals
     end

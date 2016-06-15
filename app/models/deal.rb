@@ -72,14 +72,12 @@ class Deal < ActiveRecord::Base
   end
 
   def sold_out?
-    #FIXME_AB: show quantity_sold in admin deal list and show page - done
     #FIXME_AB: check admin end working fine, as we have made several changes in deal model
     #FIXME_AB: rake task should be working fine- test it
     (quantity - quantity_sold) <= 0
   end
 
   def expired?
-    #FIXME_AB: publisheable and publish_date < today - done
     live.blank? && publishable && publish_date < Date.today
   end
 
