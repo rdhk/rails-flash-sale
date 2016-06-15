@@ -5,6 +5,7 @@
       <th>Title</th>
       <th>Price(Rs)</th>
       <th>Discounted Price(Rs)</th>
+      <th>Quantity Sold</th>
       <th>Creator</th>
       <th>Publisher</th>
       <th>Quantity</th>
@@ -20,6 +21,7 @@
       <td><%= deal.title %></td>
       <td><%= deal.price %></td>
       <td><%= deal.discounted_price %></td>
+      <td><%= deal.quantity_sold %></td>
       <td><%= deal.creator.email if deal.creator%></td>
       <td data-behaviour ="publisher"><%= deal.publisher.email if deal.publisher %></td>
       <td><%= deal.quantity %></td>

@@ -1,43 +1,34 @@
 class OrdersController < ApplicationController
 
   before_action :authenticate
-  #FIXME_AB: you can merge these two in one :ensure_deal_is_purchasable
-  before_action :check_valid_deal, only: [:add_item]
-  before_action :ensure_deal_available, only:[:add_item]
+  #FIXME_AB: you can merge these two in one :ensure_deal_is_purchasable - done
+  before_action :ensure_deal_is_purchasable, only: [:add_item]
+  before_action :ensure_deal_not_in_cart, only: [:add_item]
+  # before_action :ensure_order_purchasable, only: [:checkout, :charge]
   before_action :check_valid_line_item, only: [:remove_item]
   before_action :check_valid_order, only: [:checkout, :charge]
+  before_action :check_order_exists, only: [:show]
 
   def index
   end
 
   def show
-    @order = current_user.orders.find_by(id: params[:id])
     if @order.paid?
       render 'order_summary'
-    elsif @order.nil?
-      #FIXME_AB: this should be before action
-      redirect_to root_path, alert: "Order does not exist"
     end
   end
 
   def remove_item
-    #FIXME_AB: get_current_order is not needed
-    @order = current_user.get_current_order
+    #FIXME_AB: get_current_order is not needed - done
     @removal_success = @order.remove_item(@line_item)
   end
 
   def add_item
-    #FIXME_AB: before_action
-    @order = current_user.get_current_order
-    #FIXME_AB: before_action
-    if @order.deals.include?(@deal)
-      redirect_to deal_path(@deal), alert: "Deal already in your cart"
-      return
-    end
+    #FIXME_AB: before_action - done
 
     if @order.add_item(@deal)
-      #FIXME_AB: redirect to show
-      render 'show'
+      #FIXME_AB: redirect to show - done
+      redirect_to order_path(@order)
     else
       flash[:errors] = @order.errors.full_messages
       redirect_to deal_path(@deal)
@@ -45,27 +36,18 @@ class OrdersController < ApplicationController
   end
 
   def checkout
-    if(@order.valid?)
-      @total = @order.total_amount
-    else
-      #FIXME_AB: before_action
-      flash[:errors] =  @order.errors.full_messages
-      redirect_to order_path(@order)
-    end
+    @total = @order.total_amount
+    #FIXME_AB: before_action - done
   end
 
   def charge
     begin
 
-      #FIXME_AB: do it in before_action
-      if(!@order.valid?)
-        flash[:errors] =  @order.errors.full_messages
-        redirect_to order_path(@order)
-        return
-      end
+      #FIXME_AB: do it in before_action - done
 
-      #FIXME_AB: @order.total_ammount_paise
-      @amount = @order.total_amount * 100
+
+      #FIXME_AB: @order.total_ammount_paise - done
+      @amount = @order.total_amount_paise
 
       customer = Stripe::Customer.create(
         :email => params[:stripeEmail],
@@ -80,18 +62,18 @@ class OrdersController < ApplicationController
         :metadata => {:email => customer.email}
       )
 
-      #FIXME_AB: order.payment_transaction.build
-      payment_transaction = current_user.payment_transactions.create(get_transaction_params(charge))
+      #FIXME_AB: order.payment_transaction.build - done
+      # payment_transaction = current_user.payment_transactions.create(get_transaction_params(charge))
 
-      #FIXME_AB: pass transaction info to mark paid. and create transaction in mark_paid
-      if @order.mark_paid
+      #FIXME_AB: pass transaction info to mark paid. and create transaction in mark_paid - done
+      if @order.mark_paid(get_transaction_params(charge))
         #FIXME_AB: redirect user to order's show page
-        redirect_to root_path, notice: "Successful payment"
+        redirect_to order_path(@order), notice: "Successful payment"
       else
-        # refund and display cart page, with error / message
+        # refund and display cart page, with error / message - done
         Stripe::Refund.create(
-          #FIXME_AB: use charge object not payment_transaction
-          charge: payment_transaction.charge_id
+          #FIXME_AB: use charge object not payment_transaction - done
+          charge: charge.id
         )
         redirect_to order_path(@order), alert: "Payment failed, you have been refunded."
       end
@@ -106,7 +88,7 @@ class OrdersController < ApplicationController
 
   def get_transaction_params(charge)
     {
-      order_id: @order.id,
+      user_id: current_user.id,
       charge_id: charge.id,
       stripe_token: params[:stripeToken],
       amount: charge.amount,
@@ -118,18 +100,37 @@ class OrdersController < ApplicationController
     }
   end
 
-  def check_valid_deal
+  def check_order_exists
+    @order = current_user.orders.find_by(id: params[:id])
+    if @order.nil?
+      #FIXME_AB: this should be before action -done
+      redirect_to root_path, alert: "Order does not exist"
+    end
+  end
+
+  def ensure_deal_is_purchasable
     @deal = Deal.live.find_by(id: params[:deal])
     if @deal.nil?
       redirect_to root_path, alert: "Sorry, invalid deal."
+    elsif @deal.sold_out?
+      redirect_to root_path, alert: "Sorry, the deal has been sold out."
     end
   end
 
   def check_valid_line_item
-    #FIXME_AB: @order = current_user.orders.pending.first
-    @line_item = current_user.orders.pending.first.line_items.find_by(id: params[:line_item])
+    #FIXME_AB: @order = current_user.orders.pending.first - done
+    @order = current_user.orders.pending.first
+    @line_item = @order.line_items.find_by(id: params[:line_item])
     if @line_item.nil?
       redirect_to root_path, alert: "Sorry, this item does not exist in your cart."
+    end
+  end
+
+  def ensure_deal_not_in_cart
+    @order = current_user.get_current_order
+    #FIXME_AB: before_action - done
+    if @order.deals.include?(@deal)
+      redirect_to deal_path(@deal), alert: "Deal already in your cart"
     end
   end
 
@@ -138,13 +139,11 @@ class OrdersController < ApplicationController
     @order = current_user.orders.pending.find_by(id: params[:id])
     if @order.nil?
       redirect_to root_path, alert: "Order does not exist"
+    elsif(@order.invalid?)
+      flash[:errors] =  @order.errors.full_messages
+      redirect_to order_path(@order)
     end
-    #FIXME_AB: order valid? will come here
+    #FIXME_AB: order valid? will come here - done
   end
 
-  def ensure_deal_available
-    if @deal.sold_out?
-      redirect_to root_path, alert: "Sorry, the deal has been sold out."
-    end
-  end
 end
