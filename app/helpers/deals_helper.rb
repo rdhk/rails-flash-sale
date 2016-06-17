@@ -8,6 +8,16 @@ module DealsHelper
     end
   end
 
+  def loyalty_discount_price(deal)
+    if(signed_in?)
+      loyalty_discount_rate = current_user.loyalty_discount_rate
+      if loyalty_discount_rate > 0
+        loyalty_discount_price = number_to_currency deal.loyalty_discount_price(loyalty_discount_rate), unit: "Rs"
+        '<h3 class="text-success"> FOR YOU: '.html_safe + loyalty_discount_price + '</h3>'.html_safe + '<h4 class="text-danger">(Additional '.html_safe + loyalty_discount_rate.to_s + '% loyalty discount)</h4>'.html_safe
+      end
+    end
+  end
+
   def buynow_or_expired_or_soldout_button(deal)
     if deal.expired?
       '<span class="label label-danger">EXPIRED</span>'.html_safe

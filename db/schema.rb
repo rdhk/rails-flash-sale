@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160613115704) do
+ActiveRecord::Schema.define(version: 20160617055049) do
+
+  create_table "addresses", force: :cascade do |t|
+    t.string   "house_no",   limit: 255
+    t.string   "street",     limit: 255
+    t.string   "city",       limit: 255
+    t.integer  "pincode",    limit: 4
+    t.integer  "user_id",    limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "addresses", ["user_id"], name: "index_addresses_on_user_id", using: :btree
 
   create_table "deals", force: :cascade do |t|
     t.string   "title",            limit: 255,                   null: false
@@ -42,8 +54,9 @@ ActiveRecord::Schema.define(version: 20160613115704) do
   end
 
   create_table "line_items", force: :cascade do |t|
-    t.integer "order_id", limit: 4
-    t.integer "deal_id",  limit: 4
+    t.integer "order_id",         limit: 4
+    t.integer "deal_id",          limit: 4
+    t.integer "discounted_price", limit: 4
   end
 
   add_index "line_items", ["deal_id"], name: "index_line_items_on_deal_id", using: :btree
@@ -54,8 +67,11 @@ ActiveRecord::Schema.define(version: 20160613115704) do
     t.integer  "status",     limit: 4, default: 0
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
+    t.integer  "address_id", limit: 4
+    t.datetime "placed_at"
   end
 
+  add_index "orders", ["address_id"], name: "index_orders_on_address_id", using: :btree
   add_index "orders", ["user_id"], name: "index_orders_on_user_id", using: :btree
 
   create_table "payment_transactions", force: :cascade do |t|
@@ -71,6 +87,10 @@ ActiveRecord::Schema.define(version: 20160613115704) do
     t.string   "stripe_token_type",  limit: 255,                null: false
     t.datetime "created_at",                                    null: false
     t.datetime "updated_at",                                    null: false
+    t.integer  "card_number_last4",  limit: 4
+    t.string   "card_name",          limit: 255
+    t.integer  "expiry_month",       limit: 4
+    t.integer  "expiry_year",        limit: 4
   end
 
   add_index "payment_transactions", ["order_id"], name: "index_payment_transactions_on_order_id", using: :btree

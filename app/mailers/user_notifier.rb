@@ -16,6 +16,11 @@ class UserNotifier < ApplicationMailer
   #
   #   en.user_notifier.send_password_change_token.subject
   #
+  def order_confirmation_mail(order)
+    @order = order
+    @user = User.find(order.user.id)
+    mail to: @user.email, subject: 'FlashSale Order Confirmation'
+  end
 
   def password_reset(user)
     @user = user

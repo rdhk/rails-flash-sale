@@ -1,0 +1,11 @@
+<h1>Hi <%= @user.first_name %>,</h1>
+<p>
+  Your order for the following items has been placed: <br>
+  <%= render @order %> <br>
+  The total amount is <%= @order.total_amount %>.
+  And the shipping address is: <br>
+   <%= @order.address.house_no %> <br>
+   <%= @order.address.street %> <br>
+   <%= @order.address.city %> <br>
+   <%= @order.address.pincode %>
+</p>

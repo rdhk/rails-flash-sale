@@ -5,10 +5,11 @@
   <table class="table table-hover table-bordered table-striped">
   <thead>
     <tr>
-      <th>Qty</th>
       <th>Item</th>
       <th>Price</th>
-      <th>Remove</th>
+      <% if order.pending? %>
+      <th>Remove </th>
+      <% end %>
     </tr>
   </thead>
   <tbody>

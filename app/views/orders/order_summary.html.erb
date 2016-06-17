@@ -9,35 +9,26 @@
             <div class="row">
                 <div class="col-xs-12 col-md-3 col-lg-3 pull-left">
                     <div class="panel panel-default height">
-                        <div class="panel-heading">Billing Details</div>
+                        <div class="panel-heading">Payment Information</div>
                         <div class="panel-body">
-                            <strong>David Peere:</strong><br>
-                            1111 Army Navy Drive<br>
-                            Arlington<br>
-                            VA<br>
-                            <strong>22 203</strong><br>
+                            <strong>Card Name:</strong> <%= @order.payment_transaction.card_name%><br>
+                            <strong>Card Number:</strong> <%= "*" * 12 + @order.payment_transaction.card_number_last4.to_s%><br>
+                            <strong>Exp Date:</strong> <%= "#{@order.payment_transaction.expiry_month}/#{@order.payment_transaction.expiry_year}" %><br>
                         </div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-3 col-lg-3">
-                    <div class="panel panel-default height">
-                        <div class="panel-heading">Payment Information</div>
-                        <div class="panel-body">
-                            <strong>Card Name:</strong> Visa<br>
-                            <strong>Card Number:</strong> ***** 332<br>
-                            <strong>Exp Date:</strong> 09/2020<br>
-                        </div>
-                    </div>
+
                 </div>
                 <div class="col-xs-12 col-md-3 col-lg-3 pull-right">
                     <div class="panel panel-default height">
                         <div class="panel-heading">Shipping Address</div>
                         <div class="panel-body">
-                            <strong>David Peere:</strong><br>
-                            1111 Army Navy Drive<br>
-                            Arlington<br>
-                            VA<br>
-                            <strong>22 203</strong><br>
+                            <strong><%= "#{current_user.first_name.capitalize} #{current_user.last_name.capitalize}" %>:</strong><br>
+                            <%= @order.address.house_no %><br>
+                            <%= @order.address.street %><br>
+                            <%= @order.address.city %><br>
+                            <strong><%= @order.address.pincode %></strong><br>
                         </div>
                     </div>
                 </div>

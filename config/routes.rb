@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   end
 
   resources :deals, only: [:index, :show]
+  resources :addresses, only: [:create]
   #FIXME_AB: we don't need all routes for orders
   resources :orders do
     member do

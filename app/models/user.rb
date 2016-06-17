@@ -39,6 +39,7 @@ class User < ActiveRecord::Base
   has_many :paid_orders, -> { where status: Order.statuses[:paid] }, class_name: "Order"
   has_many :purchased_deals, through: :paid_orders, source: "deals"
   has_many :payment_transactions, dependent: :restrict_with_error
+  has_many :addresses, dependent: :destroy
 
   scope :verified, -> {where.not(verified_at: nil)}
 
@@ -46,6 +47,16 @@ class User < ActiveRecord::Base
   before_create :generate_verification_token, if: "!admin"
   before_validation :set_password_required, on: :create
 
+  def loyalty_discount_rate
+    orders_count = orders.paid.length
+    if orders_count < 1
+      return 0
+    elsif orders_count >= 6
+      return CONSTANTS["max_loyalty_discount_rate"]
+    else
+      return orders_count
+    end
+  end
 
   def get_current_order
     order = orders.pending.first

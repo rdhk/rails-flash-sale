@@ -1,11 +1,15 @@
-<%= render @order %>
-<div class = "row">
-  <div class="text-left col-md-6">
-    <%= link_to deals_path do %>
-    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back to deals
-    <% end %>
+<%  if @order.paid? %>
+  <%= render template: 'orders/order_summary' %>
+<% else %>
+  <%= render @order %>
+  <div class = "row">
+    <div class="text-left col-md-6">
+      <%= link_to deals_path do %>
+      <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back to deals
+      <% end %>
+    </div>
+    <div class="text-right col-md-6">
+      <%= paynow_or_expired_button(@order) %>
+    </div>
   </div>
-  <div class="text-right col-md-6">
-    <%= paynow_or_expired_button(@order) %>
-  </div>
-</div>
+<% end %>

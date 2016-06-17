@@ -1,0 +1,35 @@
+<div class="form-horizontal">
+<% @address = current_user.addresses.new %>
+  <%= form_for :address, url: addresses_url(format: :json), remote: true do |f| %>
+  <fieldset>
+    <legend>New User Address</legend>
+    <div class="form-group">
+      <%= label_tag :house_no, nil,class: "col-lg-2 control-label req" %>
+      <div class="col-lg-4">
+        <%= text_field_tag :house_no, nil, class: "form-control", required: true %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= label_tag :street, nil,class: "col-lg-2 control-label req" %>
+      <div class="col-lg-4">
+        <%= text_field_tag :street, nil, class: "form-control", required: true %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= label_tag :city, nil,class: "col-lg-2 control-label req" %>
+      <div class="col-lg-4">
+        <%= text_field_tag :city, nil, class: "form-control", required: true %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= label_tag :pincode, nil,class: "col-lg-2 control-label req" %>
+      <div class="col-lg-4">
+        <%= text_field_tag :pincode, nil, class: "form-control", required: true %>
+      </div>
+    </div>
+    <div class="actions col-lg-offset-2">
+      <%= f.submit "Submit" %>
+    </div>
+  </fieldset>
+  <% end %>
+</div>

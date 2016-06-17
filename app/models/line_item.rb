@@ -2,9 +2,10 @@
 #
 # Table name: line_items
 #
-#  id       :integer          not null, primary key
-#  order_id :integer
-#  deal_id  :integer
+#  id               :integer          not null, primary key
+#  order_id         :integer
+#  deal_id          :integer
+#  discounted_price :integer
 #
 # Indexes
 #
@@ -15,5 +16,5 @@
 class LineItem < ActiveRecord::Base
   belongs_to :order
   belongs_to :deal
-  #FIXME_AB: lineitem would have many more attributes. like  discounted_price
+  #FIXME_AB: lineitem would have many more attributes. like  discounted_price - done
 end
