@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160617055049) do
+ActiveRecord::Schema.define(version: 20160620052426) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "house_no",   limit: 255
@@ -78,19 +78,20 @@ ActiveRecord::Schema.define(version: 20160617055049) do
     t.integer  "user_id",            limit: 4,                  null: false
     t.integer  "order_id",           limit: 4,                  null: false
     t.string   "charge_id",          limit: 255,                null: false
-    t.string   "stripe_token",       limit: 255,                null: false
+    t.string   "stripe_token",       limit: 255
     t.decimal  "amount",                         precision: 10, null: false
     t.string   "currency",           limit: 255,                null: false
-    t.string   "stripe_customer_id", limit: 255,                null: false
+    t.string   "stripe_customer_id", limit: 255
     t.string   "description",        limit: 255,                null: false
-    t.string   "stripe_email",       limit: 255,                null: false
-    t.string   "stripe_token_type",  limit: 255,                null: false
+    t.string   "stripe_email",       limit: 255
+    t.string   "stripe_token_type",  limit: 255
     t.datetime "created_at",                                    null: false
     t.datetime "updated_at",                                    null: false
     t.integer  "card_number_last4",  limit: 4
     t.string   "card_name",          limit: 255
     t.integer  "expiry_month",       limit: 4
     t.integer  "expiry_year",        limit: 4
+    t.string   "refund_id",          limit: 255
   end
 
   add_index "payment_transactions", ["order_id"], name: "index_payment_transactions_on_order_id", using: :btree

@@ -1,6 +1,6 @@
   <tr data-behaviour="lineitem_row">
   <td><%= line_item.deal.title %></td>
-  <td><%= number_to_currency(line_item.discounted_price, unit: "Rs")  %></td>
+  <td><%= number_to_currency(line_item.discounted_price, unit: "₹")  %></td>
   <% if line_item.order.pending?  %>
   <td data-behaviour= "deletelineitem"><%= link_to "delete", orders_remove_item_path(line_item: line_item), class: "btn btn-sm btn-danger", format: :json, method: :post, remote: true  %>
   </td>

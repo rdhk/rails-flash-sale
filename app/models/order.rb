@@ -22,17 +22,23 @@ class Order < ActiveRecord::Base
   belongs_to :address
   has_many :line_items, dependent: :destroy
   has_many :deals, through: :line_items
-  has_one :payment_transaction, dependent: :restrict_with_error
+  #FIXME_AB: we would need to convert it in has_many when admin cancle and refunds
+  has_many :payment_transactions, dependent: :restrict_with_error
 
-  enum status: [:pending, :processing, :paid]
+  enum status: [:pending, :delivered, :paid, :cancelled]
 
   scope :pending, -> { where(status: Order.statuses[:pending]) }
   scope :paid, -> { where(status: Order.statuses[:paid]) }
+  scope :placed, -> {where.not(placed_at: nil)}
+  scope :last_placed_order, -> {placed.order(placed_at: :desc).limit(1)}
 
   validates_with OrderPurchasabilityValidator, if: "pending? || marking_paid?"
+  #FIXME_AB: validate that address shoudl be associated with order when marking an order as paid - done
+  validates :address, presence: true, if: :marking_paid?
 
   before_save :increase_sold_quantities , if: :marking_paid?
-  after_commit :send_order_confirmation_email, if: "previous_changes[:status] && paid?"
+  #FIXME_AB: ensure pending to paid - done
+  after_commit :send_order_confirmation_email, if: "previous_changes[:status] && paid? && (previous_changes[:status][0]=='pending')"
 
   def marking_paid?
     changes[:status] && paid?
@@ -55,9 +61,8 @@ class Order < ActiveRecord::Base
 
   def mark_paid(transaction_params)
     self.status = 'paid'
-    #FIXME_AB: use build - done
     self.placed_at = Time.current
-    build_payment_transaction(transaction_params)
+    payment_transactions.build(transaction_params)
     save
   end
 
@@ -80,7 +85,6 @@ class Order < ActiveRecord::Base
 
   def add_item(deal)
     price = deal.loyalty_discount_price(user.loyalty_discount_rate)
-    debugger
     line_items.build(deal_id: deal.id, discounted_price: price)
     save
   end

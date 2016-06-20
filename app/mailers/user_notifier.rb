@@ -18,8 +18,10 @@ class UserNotifier < ApplicationMailer
   #
   def order_confirmation_mail(order)
     @order = order
-    @user = User.find(order.user.id)
-    mail to: @user.email, subject: 'FlashSale Order Confirmation'
+    #FIXME_AB: you don't nee @user variable use order.user - done
+    @user = order.user
+    #FIXME_AB: subject: include the order number - done
+    mail to: @user.email, subject: 'FlashSale Order Confirmation for order #<%= order.id.to_s %>'
   end
 
   def password_reset(user)

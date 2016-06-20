@@ -14,7 +14,11 @@
 #
 
 class LineItem < ActiveRecord::Base
+
+  validates :order, :deal, :discounted_price, presence: true
+
   belongs_to :order
   belongs_to :deal
-  #FIXME_AB: lineitem would have many more attributes. like  discounted_price - done
+
+  #FIXME_AB: validations - done
 end

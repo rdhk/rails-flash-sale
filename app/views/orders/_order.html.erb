@@ -16,7 +16,7 @@
     <%= render partial: 'orders/line_item', collection: order.line_items %>
     <tr>
       <td colspan="2"><strong>Total</strong></td>
-      <td colspan="2"><strong data-behaviour="total"><%= number_to_currency(order.total_amount, unit: "Rs") %></strong></td>
+      <td colspan="2"><strong data-behaviour="total"><%= number_to_currency(order.total_amount, unit: "₹") %></strong></td>
     </tr>
   </tbody>
   </table>

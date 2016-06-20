@@ -9,11 +9,12 @@ module DealsHelper
   end
 
   def loyalty_discount_price(deal)
-    if(signed_in?)
+    if(signed_in? && deal.live)
       loyalty_discount_rate = current_user.loyalty_discount_rate
       if loyalty_discount_rate > 0
-        loyalty_discount_price = number_to_currency deal.loyalty_discount_price(loyalty_discount_rate), unit: "Rs"
-        '<h3 class="text-success"> FOR YOU: '.html_safe + loyalty_discount_price + '</h3>'.html_safe + '<h4 class="text-danger">(Additional '.html_safe + loyalty_discount_rate.to_s + '% loyalty discount)</h4>'.html_safe
+        loyalty_discount_price = number_to_currency(deal.loyalty_discount_price(loyalty_discount_rate), unit: "₹")
+        #FIXME_AB: use interpolation and then call html_safe only once - done
+        "<h3 class='text-success'> FOR YOU: #{loyalty_discount_price}</h3><h4 class='text-danger'>(Additional #{loyalty_discount_rate}% loyalty discount)</h4>".html_safe
       end
     end
   end

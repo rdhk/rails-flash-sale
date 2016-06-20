@@ -48,7 +48,9 @@ class User < ActiveRecord::Base
   before_validation :set_password_required, on: :create
 
   def loyalty_discount_rate
-    orders_count = orders.paid.length
+    #FIXME_AB: orders.placed.count
+
+    orders_count = orders.paid.count
     if orders_count < 1
       return 0
     elsif orders_count >= 6

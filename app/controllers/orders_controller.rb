@@ -4,15 +4,15 @@ class OrdersController < ApplicationController
   before_action :ensure_deal_is_purchasable, only: [:add_item]
   before_action :ensure_deal_not_in_cart, only: [:add_item]
   before_action :check_valid_line_item, only: [:remove_item]
-  before_action :check_valid_order, only: [:checkout, :charge]
-  before_action :set_order_address, only: [:charge]
+  before_action :check_valid_order, only: [:checkout, :charge, :preview]
+  before_action :set_order_address, only: [:preview]
   before_action :check_order_exists, only: [:show]
 
   def index
+    @orders = current_user.orders
   end
 
   def show
-    #FIXME_AB: move this to show.html.erb - done
   end
 
   def remove_item
@@ -20,9 +20,7 @@ class OrdersController < ApplicationController
   end
 
   def add_item
-    # discounted_price = @deal.loyalty_discount_price(current_user.loyalty_discount_rate)
     if @order.add_item(@deal)
-      #FIXME_AB: flash message - done
       redirect_to order_path(@order), notice: "#{@deal.title} has been successfully added to your cart."
     else
       flash[:errors] = @order.errors.full_messages
@@ -31,8 +29,14 @@ class OrdersController < ApplicationController
   end
 
   def checkout
-    #FIXME_AB: use @order.total_amount directly - done
-    @recent_address_id = current_user.orders.paid.order(:placed_at).first.address.id
+    #FIXME_AB: @last_used_address = current_user.last_placed_order.address - done
+    last_placed_order = current_user.orders.last_placed_order.first
+      @last_used_address = last_placed_order.address if last_placed_order
+  end
+
+  #FIXME_AB: there will be another step preview which will ensure that address is associated with the order - done
+  def preview
+
   end
 
   def charge
@@ -51,18 +55,17 @@ class OrdersController < ApplicationController
         :currency    => 'inr',
         :metadata => {:email => customer.email}
       )
-
+      debugger
       if @order.mark_paid(get_transaction_params(charge, customer))
         redirect_to order_path(@order), notice: "Successful payment"
       else
         #FIXME_AB: test refund as discussed
-        Stripe::Refund.create(
+        refund_object = Stripe::Refund.create(
           charge: charge.id
         )
+        @order.payment_transactions.create(get_refund_transaction_params(refund_object, customer))
         redirect_to order_path(@order), alert: "Payment failed, you have been refunded."
       end
-
-      debugger
 
     rescue Stripe::CardError => e
       flash[:error] = e.message
@@ -87,6 +90,17 @@ class OrdersController < ApplicationController
       card_name: customer.sources.data[0]["brand"],
       expiry_month: customer.sources.data[0]["exp_month"].to_i,
       expiry_year: customer.sources.data[0]["exp_year"].to_i
+    }
+  end
+
+  def get_refund_transaction_params(refund, customer)
+    {
+      user_id: current_user.id,
+      refund_id: refund.id,
+      charge_id: refund.charge,
+      amount: refund.amount,
+      currency: refund.currency,
+      description:"#{customer.email} was refunded Rs #{@amount} for order number #{@order.id}",
     }
   end
 
@@ -132,11 +146,12 @@ class OrdersController < ApplicationController
   end
 
   def set_order_address
-    @address = current_user.addresses.find_by(id: params[:user][:address])
+    @address = current_user.addresses.find_by(id: params[:user][:address]) if params[:user]
     if @address.nil?
-      redirect_to order_path(@order), alert: "Invalid Address"
+      redirect_to checkout_order_path(@order), alert: "Invalid Address"
     else
       @order.address = @address
+      @order.save
     end
   end
 

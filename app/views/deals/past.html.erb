@@ -1,0 +1,7 @@
+<%= render @deals %>
+<div style="width:100%;">
+<%= will_paginate @deals %>
+</div>
+<% content_for :head do %>
+  <%= stylesheet_link_tag 'deals' %>
+<% end %>

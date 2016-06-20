@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  helper_method :current_user, :signed_in?, :current_pending_order
+  helper_method :current_user, :signed_in?, :current_pending_order, :charged_payment_transaction
 
   def set_deal
     @deal = Deal.publishable.find_by(id: params[:id])
@@ -38,6 +38,10 @@ class ApplicationController < ActionController::Base
 
   def current_pending_order
     @current_pending_order ||= current_user.orders.pending.first
+  end
+
+  def charged_payment_transaction
+    @payment_transaction ||= @order.payment_transactions.charged.first
   end
 
   def find_current_user

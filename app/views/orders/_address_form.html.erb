@@ -2,7 +2,7 @@
 <% @address = current_user.addresses.new %>
   <%= form_for :address, url: addresses_url(format: :json), remote: true do |f| %>
   <fieldset>
-    <legend>New User Address</legend>
+    <legend>New Address</legend>
     <div class="form-group">
       <%= label_tag :house_no, nil,class: "col-lg-2 control-label req" %>
       <div class="col-lg-4">

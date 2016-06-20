@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="caption-full">
-      <h4 class="pull-right"><s><%= number_to_currency deal.price, unit: "Rs" %></s> <%= number_to_currency deal.discounted_price, unit: "Rs" %></h4>
+      <h4 class="pull-right"><s><%= number_to_currency deal.price, unit: "₹" %></s> <%= number_to_currency deal.discounted_price, unit: "₹" %></h4>
       <%= loyalty_discount_price(deal) %>
       <h4><%= link_to deal.title, deal_path(deal) %>
       </h4>

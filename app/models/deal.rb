@@ -50,7 +50,7 @@ class Deal < ActiveRecord::Base
   accepts_nested_attributes_for :images, :allow_destroy => true
 
   scope :publishable, -> { where(publishable: true) }
-  scope :past_publishable, -> { publishable.where("publish_date < ?", Date.today)}
+  scope :past_publishable, -> { publishable.where("publish_date < ?", Date.today).where(live: false)}
   scope :live, -> { where(live: true) }
   scope :recent_past_deals, -> (lim = 2) { past_publishable.order(publish_date: :desc).limit(lim) }
 
@@ -58,7 +58,8 @@ class Deal < ActiveRecord::Base
   before_destroy :can_be_destroyed?
 
   def loyalty_discount_price(rate)
-    self.discounted_price - (self.price * rate / 100)
+    #FIXME_AB: self not needed - done
+    discounted_price - (price * rate / 100)
   end
 
   def increase_sold_qty_by(qty = 1)
