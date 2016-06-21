@@ -24,7 +24,6 @@ class Order < ActiveRecord::Base
   has_many :deals, through: :line_items
   has_many :payment_transactions, dependent: :restrict_with_error
 
-  #FIXME_AB: use hash - done
   enum status: {pending: 0, paid: 1, delivered: 2, cancelled: 3}
 
   scope :pending, -> { where(status: Order.statuses[:pending]) }

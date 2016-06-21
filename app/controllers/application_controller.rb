@@ -40,8 +40,6 @@ class ApplicationController < ActionController::Base
     @current_pending_order ||= current_user.orders.pending.first
   end
 
-  #FIXME_AB:  we don't need this here - done
-
   def find_current_user
     if session[:user_id]
       User.find(session[:user_id])

@@ -9,8 +9,9 @@ class OrdersController < ApplicationController
   before_action :check_order_exists, only: [:show]
 
   def index
-    #FIXME_AB: if no orders then don't display the table in the view. Show appro. message - done
+    #FIXME_AB: if no orders then don't display the table in the view. Show appro. message
     @orders = current_user.orders
+    #FIXME_AB:
     if(@orders.count == 0)
       redirect_to :back, alert: "Sorry, you dont have any orders to display."
     end
@@ -61,7 +62,7 @@ class OrdersController < ApplicationController
       if @order.mark_paid(get_transaction_params(charge, customer))
         redirect_to order_path(@order), notice: "Successful payment"
       else
-        refund_object = Stripe::Refund.create(
+        Stripe::Refund.create(
           charge: charge.id
         )
         # @order.payment_transactions.create(get_refund_transaction_params(refund_object, customer))
@@ -152,15 +153,7 @@ class OrdersController < ApplicationController
       redirect_to checkout_order_path(@order), alert: "Please choose an address"
     elsif !@order.set_address(@address)
       redirect_to :back, "Sorry, please try again."
-      #FIXME_AB: @order.set_address(@address) - done
     end
-
-    #FIXME_AB: - done
-    # if @address && @order.set_address(@address)
-    #   redirect to successfull
-    # else
-    #   redirec to back with
-    # end
 
   end
 

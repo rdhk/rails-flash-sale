@@ -10,6 +10,7 @@ class DealsController < ApplicationController
   end
 
   def check_status
+    #FIXME_AB: check for publishable
     @deal = Deal.find_by(id: params[:deal])
   end
 

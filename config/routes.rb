@@ -26,8 +26,7 @@ Rails.application.routes.draw do
       post 'preview'
     end
   end
-  #FIXME_AB: rest
-  # post 'orders/preview'
+
   get 'activation/:token' => 'users#activate', as: 'activate'
   resources :password_requests, only: [:new, :create]
   resources :password_resets, only: [:new, :create]
