@@ -1,5 +1,4 @@
 class AddressesController < ApplicationController
-  #FIXME_AB: who can create an address? - done
   before_action :authenticate
 
   def create
@@ -7,7 +6,6 @@ class AddressesController < ApplicationController
     @save_success = @address.save
   end
 
-  #FIXME_AB: private? - done
   private
 
   def address_params

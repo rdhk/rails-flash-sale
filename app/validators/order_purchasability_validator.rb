@@ -3,8 +3,6 @@ class OrderPurchasabilityValidator < ActiveModel::Validator
   def validate(record)
     record.line_items.each do |li|
       deal = li.deal
-      deal.reload
-      debugger
       if(deal.expired?)
         record.errors[:base] << "#{deal.title} has expired."
       elsif(deal.sold_out?)

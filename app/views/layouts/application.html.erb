@@ -28,7 +28,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Account <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
           <% if signed_in? %>
-          <li><%= link_to "My Orders", orders_path(user: current_user) %></li>
+          <li><%= link_to "My Orders", orders_path%></li>
           <% end %>
             <li class="divider"></li>
             <li><a href="#">Separated link</a></li>

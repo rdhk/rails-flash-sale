@@ -11,9 +11,11 @@
                     <div class="panel panel-default height">
                         <div class="panel-heading">Payment Information</div>
                         <div class="panel-body">
-                            <strong>Card Name:</strong> <%= charged_payment_transaction.card_name %><br>
-                            <strong>Card Number:</strong> <%= "*" * 12 + charged_payment_transaction.card_number_last4.to_s %><br>
-                            <strong>Exp Date:</strong> <%= "#{charged_payment_transaction.expiry_month}/#{charged_payment_transaction.expiry_year}" %><br>
+                        <% #FIXME_AB: this helper not needed -%>
+                            <strong>Card Name:</strong> <%= @order.payment_transactions.charged.first.card_name %><br>
+                            <% #FIXME_AB: use String#rjust -%>
+                            <strong>Card Number:</strong> <%= @order.payment_transactions.charged.first.card_number_last4.to_s.rjust(16, "*") %><br>
+                            <strong>Exp Date:</strong> <%= "#{@order.payment_transactions.charged.first.expiry_month}/#{@order.payment_transactions.charged.first.expiry_year}" %><br>
                         </div>
                     </div>
                 </div>
@@ -33,7 +35,7 @@
                     </div>
                 </div>
             </div>
-            <p> Transaction ID: <%= link_to charged_payment_transaction.id, payment_transaction_path(charged_payment_transaction) %></p>
+            <p> Transaction ID: <%= @order.payment_transactions.charged.first.id%></p>
         </div>
     </div>
     <div class="row">

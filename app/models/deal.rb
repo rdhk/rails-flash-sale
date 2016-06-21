@@ -58,7 +58,6 @@ class Deal < ActiveRecord::Base
   before_destroy :can_be_destroyed?
 
   def loyalty_discount_price(rate)
-    #FIXME_AB: self not needed - done
     discounted_price - (price * rate / 100)
   end
 

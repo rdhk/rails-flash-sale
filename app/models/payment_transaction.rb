@@ -27,6 +27,7 @@
 #  index_payment_transactions_on_user_id   (user_id)
 #
 
+#FIXME_AB:  not needed for now
 class PaymentTransaction < ActiveRecord::Base
 
   belongs_to :user

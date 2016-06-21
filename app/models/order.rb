@@ -22,10 +22,10 @@ class Order < ActiveRecord::Base
   belongs_to :address
   has_many :line_items, dependent: :destroy
   has_many :deals, through: :line_items
-  #FIXME_AB: we would need to convert it in has_many when admin cancle and refunds
   has_many :payment_transactions, dependent: :restrict_with_error
 
-  enum status: [:pending, :delivered, :paid, :cancelled]
+  #FIXME_AB: use hash - done
+  enum status: {pending: 0, paid: 1, delivered: 2, cancelled: 3}
 
   scope :pending, -> { where(status: Order.statuses[:pending]) }
   scope :paid, -> { where(status: Order.statuses[:paid]) }
@@ -33,12 +33,15 @@ class Order < ActiveRecord::Base
   scope :last_placed_order, -> {placed.order(placed_at: :desc).limit(1)}
 
   validates_with OrderPurchasabilityValidator, if: "pending? || marking_paid?"
-  #FIXME_AB: validate that address shoudl be associated with order when marking an order as paid - done
   validates :address, presence: true, if: :marking_paid?
 
   before_save :increase_sold_quantities , if: :marking_paid?
-  #FIXME_AB: ensure pending to paid - done
   after_commit :send_order_confirmation_email, if: "previous_changes[:status] && paid? && (previous_changes[:status][0]=='pending')"
+
+  def set_address(address)
+    self.address = address
+    save
+  end
 
   def marking_paid?
     changes[:status] && paid?

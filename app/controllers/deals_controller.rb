@@ -9,6 +9,10 @@ class DealsController < ApplicationController
     end
   end
 
+  def check_status
+    @deal = Deal.find_by(id: params[:deal])
+  end
+
   def past
     @deals = Deal.past_publishable.paginate(:page => params[:page], :per_page => 2)
   end

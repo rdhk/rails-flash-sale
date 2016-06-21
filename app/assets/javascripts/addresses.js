@@ -8,7 +8,6 @@ $(document).ready(function() {
     var $this = $(event.target);
 
     if (data["status"] == "success") {
-      // FIXME_AB: use window.location = data...... - done
       window.location.assign(data["redirect_to"])
     } else {
       $form.find(".alert-danger").remove();

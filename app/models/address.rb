@@ -18,10 +18,8 @@
 
 class Address < ActiveRecord::Base
   belongs_to :user
-  #FIXME_AB: dependent? - done
   has_many :orders, dependent: :restrict_with_error
 
   validates :house_no, :street, :city, :pincode, presence: true
-  #FIXME_AB: allow_blank? - done
   validates :pincode, numericality: true, length: {is: 6}, allow_blank: true
 end

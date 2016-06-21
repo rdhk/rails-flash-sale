@@ -9,7 +9,11 @@ class OrdersController < ApplicationController
   before_action :check_order_exists, only: [:show]
 
   def index
+    #FIXME_AB: if no orders then don't display the table in the view. Show appro. message - done
     @orders = current_user.orders
+    if(@orders.count == 0)
+      redirect_to :back, alert: "Sorry, you dont have any orders to display."
+    end
   end
 
   def show
@@ -29,12 +33,10 @@ class OrdersController < ApplicationController
   end
 
   def checkout
-    #FIXME_AB: @last_used_address = current_user.last_placed_order.address - done
     last_placed_order = current_user.orders.last_placed_order.first
-      @last_used_address = last_placed_order.address if last_placed_order
+    @last_used_address = last_placed_order.address if last_placed_order
   end
 
-  #FIXME_AB: there will be another step preview which will ensure that address is associated with the order - done
   def preview
 
   end
@@ -55,16 +57,15 @@ class OrdersController < ApplicationController
         :currency    => 'inr',
         :metadata => {:email => customer.email}
       )
-      debugger
+
       if @order.mark_paid(get_transaction_params(charge, customer))
         redirect_to order_path(@order), notice: "Successful payment"
       else
-        #FIXME_AB: test refund as discussed
         refund_object = Stripe::Refund.create(
           charge: charge.id
         )
-        @order.payment_transactions.create(get_refund_transaction_params(refund_object, customer))
-        redirect_to order_path(@order), alert: "Payment failed, you have been refunded."
+        # @order.payment_transactions.create(get_refund_transaction_params(refund_object, customer))
+        redirect_to order_path(@order), alert: "Sorry, we could not save your order. Your amount will be refunded if charged.."
       end
 
     rescue Stripe::CardError => e
@@ -93,16 +94,16 @@ class OrdersController < ApplicationController
     }
   end
 
-  def get_refund_transaction_params(refund, customer)
-    {
-      user_id: current_user.id,
-      refund_id: refund.id,
-      charge_id: refund.charge,
-      amount: refund.amount,
-      currency: refund.currency,
-      description:"#{customer.email} was refunded Rs #{@amount} for order number #{@order.id}",
-    }
-  end
+  # def get_refund_transaction_params(refund, customer)
+  #   {
+  #     user_id: current_user.id,
+  #     refund_id: refund.id,
+  #     charge_id: refund.charge,
+  #     amount: refund.amount,
+  #     currency: refund.currency,
+  #     description:"#{customer.email} was refunded Rs #{@amount} for order number #{@order.id}",
+  #   }
+  # end
 
   def check_order_exists
     @order = current_user.orders.find_by(id: params[:id])
@@ -148,11 +149,19 @@ class OrdersController < ApplicationController
   def set_order_address
     @address = current_user.addresses.find_by(id: params[:user][:address]) if params[:user]
     if @address.nil?
-      redirect_to checkout_order_path(@order), alert: "Invalid Address"
-    else
-      @order.address = @address
-      @order.save
+      redirect_to checkout_order_path(@order), alert: "Please choose an address"
+    elsif !@order.set_address(@address)
+      redirect_to :back, "Sorry, please try again."
+      #FIXME_AB: @order.set_address(@address) - done
     end
+
+    #FIXME_AB: - done
+    # if @address && @order.set_address(@address)
+    #   redirect to successfull
+    # else
+    #   redirec to back with
+    # end
+
   end
 
 end
