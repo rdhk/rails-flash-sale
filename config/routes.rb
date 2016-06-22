@@ -1,5 +1,15 @@
 Rails.application.routes.draw do
 
+  # namespace :admin do
+  # get 'orders/index'
+  # end
+
+  namespace :api do
+    get 'deals/live'
+    get 'deals/past'
+    get 'myorders', to: 'orders#index'
+  end
+
   namespace :admin do
     resources :deals do
       member do
@@ -7,15 +17,20 @@ Rails.application.routes.draw do
         get 'publish'
       end
     end
+    resources :orders, only: [:index]
   end
 
+
   get 'deals/past'
-  get 'deals/check_status'
-  resources :deals, only: [:index, :show]
+  resources :deals, only: [:index, :show] do
+    member do
+      get 'check_status'
+    end
+  end
   resources :addresses, only: [:create]
   resources :payment_transactions, only: [:index, :show]
-  #FIXME_AB: we don't need all routes for orders
-  resources :orders do
+  #FIXME_AB: we don't need all routes for orders - done
+  resources :orders, only: [:index, :show] do
     collection do
       post 'add_item'
       post 'remove_item'

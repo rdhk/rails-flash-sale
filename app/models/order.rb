@@ -28,6 +28,8 @@ class Order < ActiveRecord::Base
 
   scope :pending, -> { where(status: Order.statuses[:pending]) }
   scope :paid, -> { where(status: Order.statuses[:paid]) }
+  scope :cancelled, -> { where(status: Order.statuses[:cancelled]) }
+  scope :delivered, -> { where(status: Order.statuses[:delivered]) }
   scope :placed, -> {where.not(placed_at: nil)}
   scope :last_placed_order, -> {placed.order(placed_at: :desc).limit(1)}
 
@@ -72,7 +74,7 @@ class Order < ActiveRecord::Base
     deals.any? { |deal| deal.expired? }
   end
 
-  #FIXME_AB: test it
+  #FIXME_AB: test it - working fine
   def clear_expired_deals
     line_items.includes(:deal).each do |li|
       if(li.deal.expired?)

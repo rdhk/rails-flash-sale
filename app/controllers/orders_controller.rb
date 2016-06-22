@@ -11,10 +11,7 @@ class OrdersController < ApplicationController
   def index
     #FIXME_AB: if no orders then don't display the table in the view. Show appro. message
     @orders = current_user.orders
-    #FIXME_AB:
-    if(@orders.count == 0)
-      redirect_to :back, alert: "Sorry, you dont have any orders to display."
-    end
+    #FIXME_AB: - done
   end
 
   def show
