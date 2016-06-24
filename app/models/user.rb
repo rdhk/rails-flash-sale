@@ -17,17 +17,20 @@
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
 #  auth_token                    :string(255)
+#  enabled                       :boolean          default(TRUE)
 #
 # Indexes
 #
-#  index_users_on_email  (email)
+#  index_users_on_auth_token  (auth_token) UNIQUE
+#  index_users_on_email       (email)
 #
 
 class User < ActiveRecord::Base
   has_secure_password
 
   attr_accessor :password_required
-
+#FIXME_AB: unique index auth token - done
+#FIXME_AB: generet token when user is verfied - done
 
   validates :first_name, :last_name, :email, presence: true
   validates :password, length: { minimum: 6 }, if: "password_required.present?"
@@ -43,10 +46,21 @@ class User < ActiveRecord::Base
   has_many :addresses, dependent: :destroy
 
   scope :verified, -> {where.not(verified_at: nil)}
+  scope :enabled, -> {where.not(enabled: false)}
 
   after_commit :send_verification_email, on: :create, if: "!admin"
   before_create :generate_verification_token, if: "!admin"
   before_validation :set_password_required, on: :create
+
+  def mark_enabled
+    self.enabled = true
+    save
+  end
+
+  def mark_disabled
+    self.enabled = false
+    save
+  end
 
   def loyalty_discount_rate
     #FIXME_AB: this should be orders.delivered.count after we have delivered
@@ -84,6 +98,7 @@ class User < ActiveRecord::Base
     self.verified_at = Time.current
     self.verification_token = nil
     self.verification_token_expires_at = nil
+    generate_token(:auth_token)
     save!
   end
 

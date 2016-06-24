@@ -56,6 +56,14 @@ class Admin::DealsController < Admin::BaseController
     @publish_success = @deal.publish(current_user)
   end
 
+  def revenue_report
+    @deals =  Deal.past_publishable.includes(:line_items).group(:id).order("sum(line_items.discounted_price) desc").references(:line_items)
+  end
+
+  def potential
+    @deals = Deal.past_publishable
+  end
+
   private
 
 

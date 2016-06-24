@@ -1,0 +1,17 @@
+<div class="col-xs-12 col-md-3 col-lg-3">
+    <div class="panel panel-default height">
+        <div class="panel-heading">Order Status</div>
+        <div class="panel-body">
+            <%= order_status_label(@order)%> <br><br>
+            <p class="text-success"> Placed At: <%= @order.placed_at.to_formatted_s(:long) %> </p>
+            <p class="text-success"> Order Amount: <%= number_to_currency @order.total_amount, unit: "₹" %> </p>
+            <% if @order.delivered? %>
+              <p class="text-success"> Delivered At: <%= @order.delivered_at.to_formatted_s(:long) %> </p>
+            <% elsif @order.cancelled? %>
+              <% refund_transaction = @order.payment_transactions.refunded.first %>
+              <p class="text-danger"> Cancelled At:  <%= refund_transaction.created_at.to_formatted_s(:long) %> </p>
+              <p class="text-danger"> Amount Refunded: <%= number_to_currency refund_transaction.amount_to_rs, unit: "₹" %> </p>
+            <% end %>
+        </div>
+    </div>
+</div>

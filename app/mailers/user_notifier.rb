@@ -19,7 +19,20 @@ class UserNotifier < ApplicationMailer
   def order_confirmation_mail(order)
     @order = order
     @user = order.user
-    mail to: @user.email, subject: '[FlashSale] [Order-<%= order.id.to_s %>] Your order has been placed successfully.'
+    mail to: @user.email, subject: ('[FlashSale] [Order-' + order.id.to_s + '] Your order has been placed successfully.')
+  end
+
+  def order_delivery_mail(order)
+    @order = order
+    @user = order.user
+    mail to: @user.email, subject: ('[FlashSale] [Order-' + order.id.to_s + '] Your order has been delivered successfully.')
+  end
+
+  def order_cancellation_mail(order)
+    @order = order
+    @user = order.user
+    @refund_transaction = @order.payment_transactions.refunded.first
+    mail to: @user.email, subject: ('[FlashSale] [Order-' + order.id.to_s + '] Your order has been cancelled.')
   end
 
   def password_reset(user)

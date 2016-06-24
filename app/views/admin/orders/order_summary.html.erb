@@ -1,0 +1,68 @@
+<!-- Simple Invoice - START -->
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="text-center">
+                <h2>Invoice for order #<%= @order.id %></h2>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-xs-12 col-md-3 col-lg-3 pull-left">
+                    <div class="panel panel-default height">
+                        <div class="panel-heading">Payment Information</div>
+                        <div class="panel-body">
+                            <% @order_payment_transaction = @order.payment_transactions.charged.first %>
+                            <strong>Card Name:</strong> <%= @order_payment_transaction.card_name %><br>
+                            <strong>Card Number:</strong> <%= @order_payment_transaction.card_number_last4.to_s.rjust(16, "*") %><br>
+                            <strong>Exp Date:</strong> <%= "#{@order_payment_transaction.expiry_month}/#{@order_payment_transaction.expiry_year}" %><br>
+                        </div>
+                    </div>
+                </div>
+                <%= render template: "admin/orders/transaction_info" %>
+                <div class="col-xs-12 col-md-3 col-lg-3 pull-right">
+                    <div class="panel panel-default height">
+                        <div class="panel-heading">Shipping Address</div>
+                        <div class="panel-body">
+                            <strong><%= "#{current_user.first_name.capitalize} #{current_user.last_name.capitalize}" %>:</strong><br>
+                            <%= @order.address.house_no %><br>
+                            <%= @order.address.street %><br>
+                            <%= @order.address.city %><br>
+                            <strong><%= @order.address.pincode %></strong><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p> Transaction ID: <%= @order.payment_transactions.charged.first.id%></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="text-center"><strong>Order summary</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <td><strong>Item Name</strong></td>
+                                    <td class="text-center"><strong>Item Quantity</strong></td>
+                                    <td class="text-right"><strong>Item Price</strong></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <%= render partial: 'orders/summary_li', collection: @order.line_items %>
+                                <tr>
+                                    <td class="emptyrow"></td>
+                                    <td class="emptyrow text-center"><strong>Total</strong></td>
+                                    <td class="emptyrow text-right"><strong><%= number_to_currency @order.total_amount, unit: "₹" %></strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+<h1>Hi <%= @user.first_name %>,</h1>
+<p>
+  Your order for the following items has been delivered: <br>
+  <%= render @order %> <br>
+  The total amount was <%= @order.total_amount %>.
+  The items have been delivered to this address at <%= @order.delivered_at.to_formatted_s(:long) %>: <br>
+   <%= @order.address.house_no %> <br>
+   <%= @order.address.street %> <br>
+   <%= @order.address.city %> <br>
+   <%= @order.address.pincode %>
+</p>

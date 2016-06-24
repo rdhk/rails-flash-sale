@@ -7,11 +7,7 @@ $(document).ready(function() {
   function checkDealStatus() {
     var $dealElement = $("[data-behaviour=deal]");
     $.ajax({
-      // FIXME_AB: use data-url and should be member resource
-      url: "check_status",
-      data: {
-        deal: $dealElement.data("deal-id")
-      },
+      url: $dealElement.data("url"),
       dataType: "json"
     }).done(function(data) {
       var $newElement = $("<span>").attr({
