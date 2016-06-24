@@ -1,4 +1,4 @@
-<%  if @order.paid? %>
+<%  if @order.placed? %>
   <%= render template: 'orders/order_summary' %>
 <% else %>
   <%= render @order %>

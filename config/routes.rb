@@ -1,5 +1,21 @@
 Rails.application.routes.draw do
 
+  namespace :admin do
+  get 'users/index'
+  end
+
+  namespace :admin do
+  get 'users/show'
+  end
+
+  namespace :admin do
+  get 'users/able'
+  end
+
+  namespace :admin do
+  get 'users/disable'
+  end
+
   # namespace :admin do
   # get 'orders/index'
   # end
@@ -16,8 +32,23 @@ Rails.application.routes.draw do
         get 'unpublish'
         get 'publish'
       end
+      collection do
+        get 'revenue_report'
+        get 'potential'
+      end
     end
-    resources :orders, only: [:index]
+    resources :orders, only: [:index, :show] do
+      member do
+        post 'mark_delivered'
+        post 'mark_cancelled'
+      end
+    end
+    resources :users, only: [:index, :show] do
+      member do
+        post 'enable'
+        post 'disable'
+      end
+    end
   end
 
 
@@ -29,12 +60,11 @@ Rails.application.routes.draw do
   end
   resources :addresses, only: [:create]
   resources :payment_transactions, only: [:index, :show]
-  #FIXME_AB: we don't need all routes for orders - done
   resources :orders, only: [:index, :show] do
     collection do
       post 'add_item'
       post 'remove_item'
-    end
+      end
     member do
       get 'checkout'
       post 'charge'

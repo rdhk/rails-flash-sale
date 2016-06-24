@@ -50,7 +50,11 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate
-    redirect_to login_path, alert: "Please log in first." unless signed_in?
+    if !signed_in?
+      redirect_to login_path, alert: "Please log in first."
+    elsif !current_user.enabled
+      redirect_to root_path, alert: "Sorry, you are a disabled user."
+    end
   end
 
 end

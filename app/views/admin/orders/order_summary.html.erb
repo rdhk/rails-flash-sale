@@ -11,14 +11,14 @@
                     <div class="panel panel-default height">
                         <div class="panel-heading">Payment Information</div>
                         <div class="panel-body">
-                        <% @order_payment_transaction = @order.payment_transactions.charged.first %>
+                            <% @order_payment_transaction = @order.payment_transactions.charged.first %>
                             <strong>Card Name:</strong> <%= @order_payment_transaction.card_name %><br>
                             <strong>Card Number:</strong> <%= @order_payment_transaction.card_number_last4.to_s.rjust(16, "*") %><br>
                             <strong>Exp Date:</strong> <%= "#{@order_payment_transaction.expiry_month}/#{@order_payment_transaction.expiry_year}" %><br>
                         </div>
                     </div>
                 </div>
-                <%= render template: 'orders/transaction_info' %>
+                <%= render template: "admin/orders/transaction_info" %>
                 <div class="col-xs-12 col-md-3 col-lg-3 pull-right">
                     <div class="panel panel-default height">
                         <div class="panel-heading">Shipping Address</div>

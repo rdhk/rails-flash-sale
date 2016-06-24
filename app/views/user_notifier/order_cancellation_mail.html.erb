@@ -1,0 +1,6 @@
+<h1>Hi <%= @user.first_name %>,</h1>
+<p>
+  Your order for the following items has been cancelled at <%= @refund_transaction.created_at.to_formatted_s(:long) %>: <br>
+  <%= render @order %> <br>
+  The total amount refunded is  <%= number_to_currency @refund_transaction.amount_to_rs, unit: "₹" %>.
+</p>

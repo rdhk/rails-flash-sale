@@ -34,4 +34,8 @@ class PaymentTransaction < ActiveRecord::Base
   belongs_to :order
   scope :charged, -> { where(refund_id: nil) }
   scope :refunded, -> { where.not(refund_id: nil) }
+
+  def amount_to_rs
+    amount / 100
+  end
 end

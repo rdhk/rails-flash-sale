@@ -4,6 +4,11 @@
   <strong>Sorry, no orders to display.</strong>
 </div>
 <% else %>
+  <%= form_tag nil, method: "get" do %>
+    <%= label_tag(:q, "Search by email:") %>
+    <%= text_field_tag(:q) %>
+    <%= submit_tag("Search") %>
+  <% end %>
   <h1>Users Orders</h1>
   <table class= "table table-striped table-bordered">
     <thead>
@@ -12,18 +17,21 @@
         <th>Total Amount</th>
         <th>Status</th>
         <th>Placed At</th>
+        <th>User</th>
       </tr>
     </thead>
     <tbody>
       <% @orders.each do |order| %>
       <tr>
-        <td><%= link_to order.id, order_path(order) %></td>
+        <td><%= link_to order.id, admin_order_path(order) %></td>
         <td><%= number_to_currency order.total_amount, unit: "₹" %></td>
         <td><%= order_status_label(order) %></td>
         <td><%= order.placed_at.to_formatted_s(:long) if order.placed_at %></td>
+        <td><%= order.user.email %></td>
       </tr>
       <% end %>
     </tbody>
   </table>
   <br>
+  <%= will_paginate @orders %>
 <% end %>

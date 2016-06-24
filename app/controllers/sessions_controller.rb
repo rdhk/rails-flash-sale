@@ -6,12 +6,12 @@ class SessionsController < ApplicationController
   end
 
   def create
-    @user = User.verified.where(email: params[:session][:email]).first
+    @user = User.verified.enabled.where(email: params[:session][:email]).first
     if(@user && @user.authenticate(params[:session][:password]))
       sign_in(@user, params[:session][:remember_me])
       redirect_to root_path, notice: "You have been successfully logged in."
     else
-      redirect_to login_path, alert: "Invalid username/password combination."
+      redirect_to login_path, alert: "Invalid username/password combination or disabled user."
     end
   end
 

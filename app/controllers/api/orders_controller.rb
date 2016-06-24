@@ -1,6 +1,7 @@
 class Api::OrdersController < ApplicationController
 
   before_action :ensure_authenticated_user
+
   def index
     @orders = @user.orders.placed
   end
@@ -8,9 +9,11 @@ class Api::OrdersController < ApplicationController
   private
 
   def ensure_authenticated_user
-    @user = User.find_by(auth_token: params[:token])
+    #FIXME_AB: verified - done
+    @user = User.verified.find_by(auth_token: params[:token])
     if @user.nil?
-      redirect_to root_path, alert: "Sorry, invalid user."
+      # FIXME_AB: return json - done
+      render :json => { :error => "Sorry, invalid user." }
     end
   end
 

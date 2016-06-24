@@ -57,12 +57,25 @@ class Deal < ActiveRecord::Base
   before_update :can_be_edited?
   before_destroy :can_be_destroyed?
 
+  def potential
+    discounted_price * quantity
+  end
+
+  def revenue
+    line_items.sum(:discounted_price)
+  end
+
   def loyalty_discount_price(rate)
     discounted_price - (price * rate / 100)
   end
 
   def increase_sold_qty_by(qty = 1)
     self.quantity_sold += qty
+    save
+  end
+
+  def decrease_sold_qty_by(qty = 1)
+    self.quantity_sold -= qty
     save
   end
 

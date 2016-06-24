@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160621102425) do
+ActiveRecord::Schema.define(version: 20160623113938) do
 
   create_table "addresses", force: :cascade do |t|
     t.string   "house_no",   limit: 255
@@ -63,12 +63,13 @@ ActiveRecord::Schema.define(version: 20160621102425) do
   add_index "line_items", ["order_id"], name: "index_line_items_on_order_id", using: :btree
 
   create_table "orders", force: :cascade do |t|
-    t.integer  "user_id",    limit: 4
-    t.integer  "status",     limit: 4, default: 0
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
-    t.integer  "address_id", limit: 4
+    t.integer  "user_id",      limit: 4
+    t.integer  "status",       limit: 4, default: 0
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.integer  "address_id",   limit: 4
     t.datetime "placed_at"
+    t.datetime "delivered_at"
   end
 
   add_index "orders", ["address_id"], name: "index_orders_on_address_id", using: :btree
@@ -112,8 +113,10 @@ ActiveRecord::Schema.define(version: 20160621102425) do
     t.datetime "created_at",                                                null: false
     t.datetime "updated_at",                                                null: false
     t.string   "auth_token",                    limit: 255
+    t.boolean  "enabled",                                   default: true
   end
 
+  add_index "users", ["auth_token"], name: "index_users_on_auth_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
 
 end

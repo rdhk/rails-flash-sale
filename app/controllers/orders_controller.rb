@@ -9,9 +9,7 @@ class OrdersController < ApplicationController
   before_action :check_order_exists, only: [:show]
 
   def index
-    #FIXME_AB: if no orders then don't display the table in the view. Show appro. message
-    @orders = current_user.orders
-    #FIXME_AB: - done
+    @orders = current_user.orders.placed
   end
 
   def show

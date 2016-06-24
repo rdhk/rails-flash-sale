@@ -1,0 +1,20 @@
+<div class="col-xs-12 col-md-3 col-lg-3">
+    <div class="panel panel-default height">
+        <div class="panel-heading">Order Status</div>
+        <div class="panel-body">
+            <%= order_status_label(@order)%> <br><br>
+            <p class="text-success"> Placed At: <%= @order.placed_at.to_formatted_s(:long) %> </p>
+            <p class="text-success"> Order Amount: <%= number_to_currency @order.total_amount, unit: "₹" %> </p>
+            <% if @order.paid? %>
+              <%= link_to "Mark delivered", mark_delivered_admin_order_path(@order), data: {confirm: 'Are you sure you want to mark the order as delivered?'} ,method: :post, class:"btn btn-success btn-sm" %>
+              <%= link_to "Mark cancelled", mark_cancelled_admin_order_path(@order), data: {confirm: 'Are you sure?'}, method: :post, class:"btn btn-danger btn-sm" %>
+            <% elsif @order.delivered? %>
+              <p class="text-success"> Delivered At: <%= @order.delivered_at.to_formatted_s(:long) %> </p>
+            <% elsif @order.cancelled? %>
+              <% refund_transaction = @order.payment_transactions.refunded.first %>
+              <p class="text-danger"> Cancelled AT:  <%= refund_transaction.created_at.to_formatted_s(:long) %> </p>
+              <p class="text-danger"> Amount Refunded: <%= number_to_currency refund_transaction.amount_to_rs, unit: "₹" %> </p>
+            <% end %>
+        </div>
+    </div>
+</div>

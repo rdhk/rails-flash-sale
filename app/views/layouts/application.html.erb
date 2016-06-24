@@ -24,8 +24,8 @@
       <ul class="nav navbar-nav">
         <li class="active"><%= link_to "Past Deals", deals_past_path %></li>
         <li><%= link_to "Live Deals", deals_path %></li>
-      <%= user_account_actions %>
-      <%= admin_account_actions %>
+      <%= render partial: 'shared/user_account_actions' %>
+      <%= render partial: 'shared/admin_account_actions' %>
       </ul>
 <!--       <form class="navbar-form navbar-left" role="search">
         <div class="form-group">

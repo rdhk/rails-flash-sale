@@ -10,12 +10,11 @@ class DealsController < ApplicationController
   end
 
   def check_status
-    #FIXME_AB: check for publishable - done
     @deal = Deal.publishable.find_by(id: params[:id])
   end
 
   def past
-    @deals = Deal.past_publishable.paginate(:page => params[:page], :per_page => 2)
+    @deals = Deal.past_publishable.paginate(page: params[:page], per_page: 2)
   end
 
   def show
